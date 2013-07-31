@@ -7,21 +7,71 @@
     <uses-sdk
         android:minSdkVersion="14"
         android:targetSdkVersion="17" />
-
+    
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+  	<uses-permission
+            android:name="android.permission.READ_SYNC_SETTINGS"/>
+    <uses-permission
+            android:name="android.permission.WRITE_SYNC_SETTINGS"/>
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity
-            android:name="org.unicef.gis.LoginActivity"
-            android:label="@string/app_name" >
+        
+        <activity android:name="org.unicef.gis.MyReportsActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        
+        <activity
+            android:name="org.unicef.gis.ConfigureServerUrlActivity"
+            android:label="@string/title_activity_configure_server_url">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity
+            android:name="org.unicef.gis.auth.AuthenticatorActivity"
+            android:label="@string/app_name" >
+        </activity>
+        
+        <service
+            android:name="org.unicef.gis.auth.AuthenticatorService">
+	        <intent-filter>
+	            <action android:name="android.accounts.AccountAuthenticator"/>
+	        </intent-filter>
+	        <meta-data
+	            android:name="android.accounts.AccountAuthenticator"
+	            android:resource="@xml/authenticator" />
+    	</service>
+    	<service
+                android:name="org.unicef.gis.sync.SyncService"
+                android:exported="true"
+                android:process=":sync">
+            <intent-filter>com.example.android.datasync.provider
+                <action android:name="android.content.SyncAdapter"/>
+            </intent-filter>
+            <meta-data android:name="android.content.SyncAdapter"
+                    android:resource="@xml/syncadapter" />
+        </service>
+        
+    	<provider
+	        android:name="org.unicef.gis.UnicefGisContentProvider"
+	        android:authorities="org.unicef.gis.provider"
+	        android:exported="false"
+	        android:syncable="true"/>
     </application>
 
 </manifest>

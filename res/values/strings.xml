@@ -6,4 +6,12 @@
     <string name="button_login">Login</string>
     <string name="action_settings">Settings</string>
     <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_display_message">Login Credentials</string>
+    <string name="hello_world">Hello world!</string>
+	<string name="enter_email">Please enter a valid email address</string>
+	<string name="enter_password">Please enter a password to log in</string>
+	<string name="authenticating">Authenticating...</string>
+	<string name="please_enter_valid_email_and_password">Please enter a valid email and password</string>
+	<string name="default_api_url">http://buenosaires.unicef-gis.org/api/</string>
+	<string name="title_activity_configure_server_url">Configure Server Address</string>
 </resources>

@@ -7,6 +7,13 @@
    	android:paddingRight="16dp"
    	android:paddingTop="32dp" 
    	>
+     <TextView
+	     android:id="@+id/message"
+	     android:textAppearance="?android:attr/textAppearanceSmall"
+	     android:layout_width="wrap_content"
+	     android:layout_height="wrap_content"
+	     android:layout_marginBottom="5dip" />
+
     
      <EditText android:id="@+id/edit_email"
         android:layout_width="fill_parent"
@@ -25,7 +32,8 @@
         android:layout_height="wrap_content"
         android:text="@string/button_login" 
         android:layout_gravity="center"
-        android:layout_marginTop="32dp" 
+        android:layout_marginTop="32dp"
+        android:onClick="handleLogin" 
         />
 </LinearLayout>
 
