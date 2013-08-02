@@ -1,4 +1,4 @@
-package org.unicef.gis;
+package org.unicef.gis.infrastructure;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

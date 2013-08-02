@@ -22,11 +22,11 @@
         />
     
     <Button  
-        android:onClick="handleClick"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="10dp"
         android:layout_gravity="center_horizontal"
+        android:onClick="saveAddress"
         android:id="@+id/configure_server_url_button_save"
         />
 </LinearLayout>

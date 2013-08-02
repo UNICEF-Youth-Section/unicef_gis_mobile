@@ -1,6 +1,7 @@
 package org.unicef.gis;
 
 import org.unicef.gis.infrastructure.RoutesResolver;
+import org.unicef.gis.infrastructure.UnicefGisStore;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -17,11 +18,23 @@ public class MyReportsActivity extends Activity {
 		
 		statusView = (TextView) findViewById(R.id.my_reports_status);
 		
+		checkAddressPreference();
+		checkTags();
+	}
+
+	private void checkTags() {
+		UnicefGisStore store = new UnicefGisStore(this);
+		
+		if (!store.tagsHaveBeenFetched())
+			startActivity(new Intent(this, FetchTagsActivity.class));
+	}
+
+	private void checkAddressPreference() {
 		RoutesResolver routes = new RoutesResolver(this);
 		String baseUrl = routes.getBaseUrl(); 
 		
 		if (baseUrl == null || baseUrl.isEmpty())
-			startActivityForResult(new Intent(this, ConfigureServerUrlActivity.class), RequestCodes.CONFIG_SERVER_URL);
+			startActivity(new Intent(this, ConfigureServerUrlActivity.class));
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {

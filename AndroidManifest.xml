@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.unicef.gis"
     android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionName="1.0" xmlns:tools="http://schemas.android.com/tools">
 
     <uses-sdk
         android:minSdkVersion="14"
@@ -43,12 +43,21 @@
         </activity>
         
         <activity
+            android:name="org.unicef.gis.FetchTagsActivity"
+            android:label="@string/title_activity_fetch_tags">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        
+        <activity
             android:name="org.unicef.gis.auth.AuthenticatorActivity"
             android:label="@string/app_name" >
         </activity>
         
         <service
-            android:name="org.unicef.gis.auth.AuthenticatorService">
+            android:name="org.unicef.gis.auth.AuthenticatorService" tools:ignore="ExportedService">
 	        <intent-filter>
 	            <action android:name="android.accounts.AccountAuthenticator"/>
 	        </intent-filter>
@@ -59,7 +68,7 @@
     	<service
                 android:name="org.unicef.gis.sync.SyncService"
                 android:exported="true"
-                android:process=":sync">
+                android:process=":sync" tools:ignore="ExportedService">
             <intent-filter>com.example.android.datasync.provider
                 <action android:name="android.content.SyncAdapter"/>
             </intent-filter>
@@ -68,7 +77,7 @@
         </service>
         
     	<provider
-	        android:name="org.unicef.gis.UnicefGisContentProvider"
+	        android:name="org.unicef.gis.infrastructure.UnicefGisContentProvider"
 	        android:authorities="org.unicef.gis.provider"
 	        android:exported="false"
 	        android:syncable="true"/>

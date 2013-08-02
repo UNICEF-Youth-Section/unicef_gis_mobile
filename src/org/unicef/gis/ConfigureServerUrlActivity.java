@@ -1,5 +1,7 @@
 package org.unicef.gis;
 
+import org.unicef.gis.infrastructure.UnicefGisStore;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.view.View;
@@ -28,8 +30,10 @@ public class ConfigureServerUrlActivity extends Activity {
 		buttonSave.setText(R.string.save_address);
 	};
 	
-	public void handleClick(View view) {
-		setResult(RESULT_OK, new Intent());
-		finish();
+	public void saveAddress(View view) {
+		UnicefGisStore store = new UnicefGisStore(this);
+		store.saveAddress(editUrl.getText().toString());
+		
+		startActivity(new Intent(this, FetchTagsActivity.class));
 	}
 }
