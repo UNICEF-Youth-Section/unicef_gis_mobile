@@ -18,4 +18,5 @@
 	<string name="welcome">Please enter your UNICEF GIS address (for example: rio.unicef-gis.org, nyhq.unicef-gis.org, etc.). \n\nYou\'ll only need to do this once.</string>
 	<string name="example_url">mycity.unicef-gis.org</string>
 	<string name="save_address">Save address</string>
+	<string name="wait_configuring">Please wait while we configure UNICEF GIS</string>
 </resources>
