@@ -5,13 +5,28 @@
     android:orientation="vertical" >
     
     <TextView 
-        android:text="CONFIGURE SERVER"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
-        
-    <Button 
-        android:text="OK" 
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:paddingBottom="5dp"
+        android:id="@+id/configure_server_url_welcome"/>
+
+    <EditText 
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:layout_marginBottom="20dp"
+        android:inputType="textUri"
+        android:id="@+id/configure_server_url_edit_url"
+        />
+    
+    <Button  
         android:onClick="handleClick"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/configure_server_url_button_save"
+        />
 </LinearLayout>

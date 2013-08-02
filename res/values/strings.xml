@@ -13,5 +13,8 @@
 	<string name="authenticating">Authenticating...</string>
 	<string name="please_enter_valid_email_and_password">Please enter a valid email and password</string>
 	<string name="default_api_url">http://buenosaires.unicef-gis.org/api/</string>
-	<string name="title_activity_configure_server_url">Configure Server Address</string>
+	<string name="title_activity_configure_server_url">Welcome to UNICEF GIS!</string>
+	<string name="welcome">Please enter your UNICEF GIS address (for example: rio.unicef-gis.org, nyhq.unicef-gis.org, etc.). \n\nYou\'ll only need to do this once.</string>
+	<string name="example_url">mycity.unicef-gis.org</string>
+	<string name="save_address">Save address</string>
 </resources>
