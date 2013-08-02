@@ -19,4 +19,6 @@
 	<string name="example_url">mycity.unicef-gis.org</string>
 	<string name="save_address">Save address</string>
 	<string name="wait_configuring">Please wait while we configure UNICEF GIS</string>
+	<string name="fetch_tags_not_connected">It seems you are not connected to the Internet at the moment. \n\nUNICEF GIS needs your cellphone to be connected for the initial setup process to finish. \n\nIn order to complete the setup, please connect your cellphone to the Internet and open UNICEF GIS again.</string>
+	<string name="go_to_network_settings">Edit your network settings</string>
 </resources>
