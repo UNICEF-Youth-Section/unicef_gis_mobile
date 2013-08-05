@@ -30,4 +30,13 @@
         android:visibility="gone"
         android:onClick="editNetworkSettings"
         />
+    
+    <Button 
+        android:id="@+id/fetch_tags_retry"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        android:onClick="retry"
+        />
 </LinearLayout>

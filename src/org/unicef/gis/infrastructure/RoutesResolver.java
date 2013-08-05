@@ -22,12 +22,37 @@ public class RoutesResolver {
 		this.context = context;
 	}
 	
-	public URL getUser() throws MalformedURLException {
-		return new URL(getBaseUrl() + "user/me");
+	public URL getUser() throws ServerUrlPreferenceNotSetException {
+		try {
+			return new URL(getBaseUrl() + "user/me");
+		} catch (MalformedURLException e) {
+			return null;
+		}
 	}
 	
-	public String getBaseUrl() {
+	public URL getTags() throws ServerUrlPreferenceNotSetException {
+		try {
+			String baseUrl = getBaseUrl();
+			URL tagsUrl = new URL(baseUrl + "tags/"); 
+			return tagsUrl;
+		} catch (MalformedURLException e) {
+			return null;
+		}
+	}
+	
+	public String getBaseUrl() throws ServerUrlPreferenceNotSetException {
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
-		return prefs.getString(PREF_SERVER_URL, "");
+		String baseUrl = prefs.getString(PREF_SERVER_URL, "");
+		
+		if (baseUrl.isEmpty())
+			throw new ServerUrlPreferenceNotSetException();
+		
+		if (!(baseUrl.startsWith("http://") || baseUrl.startsWith("https://")))
+			baseUrl = "http://" + baseUrl;
+		
+		if (!baseUrl.endsWith("/"))
+			baseUrl = baseUrl + "/";
+		
+		return baseUrl + "api/";
 	}
 }

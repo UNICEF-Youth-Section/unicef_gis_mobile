@@ -1,6 +1,9 @@
 package org.unicef.gis;
 
+import java.util.List;
+
 import org.unicef.gis.infrastructure.Network;
+import org.unicef.gis.model.Tag;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -15,6 +18,7 @@ public class FetchTagsActivity extends Activity {
 	private ProgressBar progress;
 	private TextView feedback;
 	private Button goToNetworkSettings;
+	private Button retry;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -24,8 +28,7 @@ public class FetchTagsActivity extends Activity {
 		loadControls();		
 		
 		goToNetworkSettings.setText(R.string.go_to_network_settings);
-		
-		checkConnectivity();
+		retry.setText(R.string.retry);
 	}
 	
 	@Override 
@@ -37,6 +40,10 @@ public class FetchTagsActivity extends Activity {
 	public void editNetworkSettings(View view){
 		startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
 	}
+	
+	public void retry(View view) {
+		checkConnectivity();
+	}
 
 	private void checkConnectivity() {
 		Network network = new Network(this);
@@ -44,17 +51,35 @@ public class FetchTagsActivity extends Activity {
 			feedback.setText(R.string.fetch_tags_not_connected);
 			progress.setVisibility(View.GONE);
 			goToNetworkSettings.setVisibility(View.VISIBLE);
-			
+			retry.setVisibility(View.GONE);			
 		} else {
 			feedback.setText(R.string.wait_configuring);
 			progress.setVisibility(View.VISIBLE);
 			goToNetworkSettings.setVisibility(View.GONE);
+			retry.setVisibility(View.GONE);
+			
+			//If connectivity is alright, fetch the tags
+			fetchTags();
 		}	
+	}
+
+	private void fetchTags() {
+		FetchTagsTask fetchTagsTask = new FetchTagsTask(this);
+		fetchTagsTask.execute();		
 	}
 
 	private void loadControls() {
 		progress = (ProgressBar) findViewById(R.id.fetch_tags_activity_progress);
 		feedback = (TextView) findViewById(R.id.fetch_tags_feedback);
 		goToNetworkSettings = (Button) findViewById(R.id.fetch_tags_go_to_network_settings);
+		retry = (Button) findViewById(R.id.fetch_tags_retry);
+	}
+
+	public void onFetchTagsResult(List<Tag> tags) {
+		StringBuffer ts = new StringBuffer();
+		for (Tag tag : tags) {
+			ts.append(tag.getValue() + " ");
+		}
+		feedback.setText(ts.toString());
 	}
 }

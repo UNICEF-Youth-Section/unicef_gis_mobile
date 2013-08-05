@@ -1,6 +1,5 @@
 package org.unicef.gis.auth;
 
-import org.unicef.gis.infrastructure.RoutesResolver;
 import org.unicef.gis.infrastructure.UnicefGisApi;
 
 import android.os.AsyncTask;
@@ -23,7 +22,7 @@ public class UserLoginTask extends AsyncTask<Void, Void, Bundle> {
     @Override
     protected Bundle doInBackground(Void... params) {
         try {
-        	UnicefGisApi api = new UnicefGisApi(new RoutesResolver(context));        	
+        	UnicefGisApi api = new UnicefGisApi(context);        	
         	return api.authenticate(email, password);
         } catch (Exception ex) {
             Log.e(TAG, "UserLoginTask.doInBackground: failed to authenticate");

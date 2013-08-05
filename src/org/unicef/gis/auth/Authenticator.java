@@ -1,9 +1,7 @@
 package org.unicef.gis.auth;
 
-import java.net.MalformedURLException;
-
 import org.unicef.gis.RequestCodes;
-import org.unicef.gis.infrastructure.RoutesResolver;
+import org.unicef.gis.infrastructure.ServerUrlPreferenceNotSetException;
 import org.unicef.gis.infrastructure.UnicefGisApi;
 
 import android.accounts.AbstractAccountAuthenticator;
@@ -73,10 +71,11 @@ public class Authenticator extends AbstractAccountAuthenticator {
         final String password = am.getPassword(account);
         if (password != null) {
             try {
-            	UnicefGisApi api = new UnicefGisApi(new RoutesResolver(context));
+            	UnicefGisApi api = new UnicefGisApi(context);
 				return api.authenticate(account.name, password);
-			} catch (MalformedURLException e) {
-				Log.d(TAG, "getAuthToken: Malformed URL caused an exception");
+			} catch (ServerUrlPreferenceNotSetException e) {
+				Log.e(TAG, "getAuthToken: Server URL preference not set caused an exception");
+				throw new NetworkErrorException();
 			}            
         }
 

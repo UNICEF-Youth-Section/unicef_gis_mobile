@@ -14,14 +14,20 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Iterator;
+import java.util.List;
 import java.util.TimeZone;
 
 import org.apache.http.client.HttpResponseException;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.unicef.gis.ConfigureServerUrlActivity;
+import org.unicef.gis.model.Tag;
 
 import android.accounts.Account;
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.net.Credentials;
 import android.net.Uri;
 import android.os.Bundle;
@@ -43,6 +49,7 @@ public class UnicefGisApi {
 	public static final String PREF_LOCAST_SITE = "locast_site";
 
 	private final RoutesResolver routes;
+	private final Context context;
 	
 	/**
 	 * Create a new NetworkClient, authenticating with the given account.
@@ -51,8 +58,8 @@ public class UnicefGisApi {
 	 * @param account
 	 * @throws MalformedURLException 
 	 */
-	public UnicefGisApi(RoutesResolver routes, Account account) throws MalformedURLException {
-		this(routes);
+	public UnicefGisApi(Context context, Account account) throws MalformedURLException {
+		this(context);
 		loadFromExistingAccount(account);
 	}
 
@@ -62,14 +69,15 @@ public class UnicefGisApi {
 	 *
 	 * @param context
 	 * @param baseUrl
-	 * @throws MalformedURLException
 	 */
-	public UnicefGisApi(RoutesResolver routes) throws MalformedURLException {
+	public UnicefGisApi(Context context) {
 		super();
-		this.routes = routes;
+		this.context = context;
+		this.routes = new RoutesResolver(context);
 	}
 	
-	public Bundle authenticate(final String email, final String password) {
+	//TODO: refactor to reuse generic methods: get, post, etc.
+	public Bundle authenticate(final String email, final String password) throws ServerUrlPreferenceNotSetException {
 		HttpURLConnection conn = null;
 		try {
 			URL url = routes.getUser();
@@ -119,6 +127,48 @@ public class UnicefGisApi {
 		} finally {
 			if (conn != null) conn.disconnect();
 		}
+	}
+
+	public List<Tag> getTags() {
+		try {
+			JSONArray tags = getArray(routes.getTags());
+			return Tag.listFromJSON(tags);
+		} catch (ServerUrlPreferenceNotSetException exception) {
+			context.startActivity(new Intent(context, ConfigureServerUrlActivity.class));
+			return null;
+		}
+	}
+	
+	/**
+	 * Makes a GET request to the given url
+	 * @param url
+	 * @return a JSONObject containing the response if the request succeeded, null otherwise
+	 */
+	private JSONArray getArray(final URL url) {
+		HttpURLConnection conn = null;
+		
+		try {
+			conn = (HttpURLConnection) url.openConnection();
+			
+			//Disable the requirement of GZIP to the server (it'd be nice to eventually reenable it)
+			conn.setRequestProperty("Accept-Encoding", "identity");
+			
+			InputStream responseStream = conn.getInputStream();
+			
+			boolean requestSucceeded = conn.getResponseCode() == HttpURLConnection.HTTP_OK;
+			if (!requestSucceeded) {
+				handleRequestFailure(conn);
+			} else {
+				String response = StreamUtils.inputStreamToString(new BufferedInputStream(responseStream));
+				return new JSONArray(response);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			if (conn != null) conn.disconnect();
+		}
+		
+		return null;
 	}
 
 	private boolean handleRequestFailure(HttpURLConnection conn) throws IOException {

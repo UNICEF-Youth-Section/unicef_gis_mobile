@@ -1,6 +1,7 @@
 package org.unicef.gis;
 
 import org.unicef.gis.infrastructure.RoutesResolver;
+import org.unicef.gis.infrastructure.ServerUrlPreferenceNotSetException;
 import org.unicef.gis.infrastructure.UnicefGisStore;
 
 import android.app.Activity;
@@ -31,10 +32,11 @@ public class MyReportsActivity extends Activity {
 
 	private void checkAddressPreference() {
 		RoutesResolver routes = new RoutesResolver(this);
-		String baseUrl = routes.getBaseUrl(); 
-		
-		if (baseUrl == null || baseUrl.isEmpty())
+		try {
+			routes.getBaseUrl();
+		} catch (ServerUrlPreferenceNotSetException e) {
 			startActivity(new Intent(this, ConfigureServerUrlActivity.class));
+		} 	
 	}
 	
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
