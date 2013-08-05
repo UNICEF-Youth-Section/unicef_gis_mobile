@@ -1,9 +1,6 @@
 package org.unicef.gis;
 
-import java.util.List;
-
 import org.unicef.gis.infrastructure.Network;
-import org.unicef.gis.model.Tag;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -75,11 +72,14 @@ public class FetchTagsActivity extends Activity {
 		retry = (Button) findViewById(R.id.fetch_tags_retry);
 	}
 
-	public void onFetchTagsResult(List<Tag> tags) {
-		StringBuffer ts = new StringBuffer();
-		for (Tag tag : tags) {
-			ts.append(tag.getValue() + " ");
+	public void onFetchTagsResult(boolean success) {
+		if (success){
+			startActivity(new Intent(this, MyReportsActivity.class));
+		} else {
+			feedback.setText(R.string.something_wrong_fetching_tags);
+			progress.setVisibility(View.GONE);
+			goToNetworkSettings.setVisibility(View.GONE);
+			retry.setVisibility(View.VISIBLE);
 		}
-		feedback.setText(ts.toString());
 	}
 }

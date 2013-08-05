@@ -1,8 +1,11 @@
 package org.unicef.gis;
 
+import java.util.List;
+
 import org.unicef.gis.infrastructure.RoutesResolver;
 import org.unicef.gis.infrastructure.ServerUrlPreferenceNotSetException;
 import org.unicef.gis.infrastructure.UnicefGisStore;
+import org.unicef.gis.model.Tag;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -21,6 +24,20 @@ public class MyReportsActivity extends Activity {
 		
 		checkAddressPreference();
 		checkTags();
+		deleteMeDisplayTags();
+	}
+
+	private void deleteMeDisplayTags() {
+		ReadAllTagsTask task = new ReadAllTagsTask(this);
+		task.execute();
+	}
+	
+	public void onReadAllTagsResult(List<Tag> tags) {
+		StringBuffer sb = new StringBuffer();
+		for (Tag tag : tags) {
+			sb.append(tag.getValue() + " ");
+		}
+		statusView.setText(sb.toString());
 	}
 
 	private void checkTags() {

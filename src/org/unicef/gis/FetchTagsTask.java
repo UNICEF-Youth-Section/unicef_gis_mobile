@@ -3,11 +3,12 @@ package org.unicef.gis;
 import java.util.List;
 
 import org.unicef.gis.infrastructure.UnicefGisApi;
+import org.unicef.gis.infrastructure.UnicefGisStore;
 import org.unicef.gis.model.Tag;
 
 import android.os.AsyncTask;
 
-public class FetchTagsTask extends AsyncTask<Void, Void, List<Tag>> {
+public class FetchTagsTask extends AsyncTask<Void, Void, Boolean> {
 	final FetchTagsActivity context;
 	
 	public FetchTagsTask(FetchTagsActivity context) {
@@ -15,13 +16,18 @@ public class FetchTagsTask extends AsyncTask<Void, Void, List<Tag>> {
 	}
 	
 	@Override
-	protected List<Tag> doInBackground(Void... arg0) {
+	protected Boolean doInBackground(Void... arg0) {
 		UnicefGisApi api = new UnicefGisApi(context);
-		return api.getTags();
+		List<Tag> tags = api.getTags();
+		
+		UnicefGisStore store = new UnicefGisStore(context);
+		store.saveTags(tags);
+		
+		return true;
 	}
 	
 	@Override
-    protected void onPostExecute(final List<Tag> tags) {
-        context.onFetchTagsResult(tags);
+    protected void onPostExecute(Boolean result) {
+        context.onFetchTagsResult(result);
     }
 }
