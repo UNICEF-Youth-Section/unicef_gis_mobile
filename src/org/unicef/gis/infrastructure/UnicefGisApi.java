@@ -21,13 +21,11 @@ import org.apache.http.client.HttpResponseException;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.unicef.gis.ConfigureServerUrlActivity;
 import org.unicef.gis.model.Tag;
 
 import android.accounts.Account;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.net.Credentials;
 import android.net.Uri;
 import android.os.Bundle;
@@ -49,7 +47,6 @@ public class UnicefGisApi {
 	public static final String PREF_LOCAST_SITE = "locast_site";
 
 	private final RoutesResolver routes;
-	private final Context context;
 	
 	/**
 	 * Create a new NetworkClient, authenticating with the given account.
@@ -72,7 +69,6 @@ public class UnicefGisApi {
 	 */
 	public UnicefGisApi(Context context) {
 		super();
-		this.context = context;
 		this.routes = new RoutesResolver(context);
 	}
 	
@@ -129,14 +125,9 @@ public class UnicefGisApi {
 		}
 	}
 
-	public List<Tag> getTags() {
-		try {
-			JSONArray tags = getArray(routes.getTags());
-			return Tag.listFromJSON(tags);
-		} catch (ServerUrlPreferenceNotSetException exception) {
-			context.startActivity(new Intent(context, ConfigureServerUrlActivity.class));
-			return null;
-		}
+	public List<Tag> getTags() throws ServerUrlPreferenceNotSetException {
+		JSONArray tags = getArray(routes.getTags());
+		return Tag.listFromJSON(tags);	
 	}
 	
 	/**

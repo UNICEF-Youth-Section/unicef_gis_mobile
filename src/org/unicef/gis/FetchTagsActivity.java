@@ -72,10 +72,13 @@ public class FetchTagsActivity extends Activity {
 		retry = (Button) findViewById(R.id.fetch_tags_retry);
 	}
 
-	public void onFetchTagsResult(boolean success) {
-		if (success){
+	public void onFetchTagsResult(Integer result) {
+		if (result == FetchTagsTask.RESULT_SUCCESS){
 			startActivity(new Intent(this, MyReportsActivity.class));
-		} else {
+		} else if (result == FetchTagsTask.SERVER_URL_PREFERENCE_NOT_SET) {
+			startActivity(new Intent(this, ConfigureServerUrlActivity.class));
+		}
+		else {
 			feedback.setText(R.string.something_wrong_fetching_tags);
 			progress.setVisibility(View.GONE);
 			goToNetworkSettings.setVisibility(View.GONE);
