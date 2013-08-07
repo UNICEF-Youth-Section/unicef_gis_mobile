@@ -40,10 +40,11 @@ public final class R {
     }
     public static final class layout {
         public static final int activity_configure_server_url=0x7f030000;
-        public static final int activity_display_message=0x7f030001;
-        public static final int activity_fetch_tags=0x7f030002;
-        public static final int activity_login=0x7f030003;
-        public static final int activity_my_reports=0x7f030004;
+        public static final int activity_create_report=0x7f030001;
+        public static final int activity_display_message=0x7f030002;
+        public static final int activity_fetch_tags=0x7f030003;
+        public static final int activity_login=0x7f030004;
+        public static final int activity_my_reports=0x7f030005;
     }
     public static final class menu {
         public static final int display_message=0x7f080000;

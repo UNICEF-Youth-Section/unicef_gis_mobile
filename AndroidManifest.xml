@@ -33,6 +33,18 @@
             </intent-filter>
         </activity>
         
+        <activity android:name="org.unicef.gis.CreateReportActivity" >
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        
+        
         <activity
             android:name="org.unicef.gis.ConfigureServerUrlActivity"
             android:label="@string/title_activity_configure_server_url">

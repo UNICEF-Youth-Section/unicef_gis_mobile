@@ -39,10 +39,12 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<C
 		
 		displaySpinningWheelWhileLoading();
 		
-		checkAddressPreference();
-		checkTags();
-		
-		setupAdapter();
+		if (checkAddressPreference() && checkTags())
+			setupAdapter();
+	}
+	
+	public void startCreateReportActivity(View view) {
+		startActivity(new Intent(this, CreateReportActivity.class));
 	}
 	
 	private void setupAdapter() {
@@ -74,19 +76,25 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<C
 		emptyView = (TextView) findViewById(R.id.my_reports_empty_message);		
 	}
 
-	private void checkTags() {
+	private boolean checkTags() {
 		UnicefGisStore store = new UnicefGisStore(this);
 		
-		if (!store.tagsHaveBeenFetched())
+		if (!store.tagsHaveBeenFetched()) {
 			startActivity(new Intent(this, FetchTagsActivity.class));
+			return false;
+		}	
+		
+		return true;
 	}
 
-	private void checkAddressPreference() {
+	private boolean checkAddressPreference() {
 		RoutesResolver routes = new RoutesResolver(this);
 		try {
 			routes.getBaseUrl();
+			return true;
 		} catch (ServerUrlPreferenceNotSetException e) {
 			startActivity(new Intent(this, ConfigureServerUrlActivity.class));
+			return false;
 		} 	
 	}
 
