@@ -23,4 +23,6 @@
 	<string name="go_to_network_settings">Edit your network settings</string>
 	<string name="retry">Retry</string>
 	<string name="something_wrong_fetching_tags">Something went wrong while trying to configure UNICEF GIS. This may be caused by intermittent connection drops. Tap \'Retry\' if you think your connection is working normally. </string>
+	<string name="no_reports">You still haven\'t created any report</string>
+	<string name="new_report">Create Report</string>
 </resources>

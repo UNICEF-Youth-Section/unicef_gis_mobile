@@ -1,11 +1,23 @@
-package org.unicef.gis.infrastructure;
+package org.unicef.gis.infrastructure.data;
+
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 public class UnicefGisContentProvider extends ContentProvider {
+	public final static String AUTHORITY = "org.unicef.gis.provider";
+	
+	private UnicefGisDbHelper dbHelper;
+	private SQLiteDatabase db;
+	
+	@Override
+	public boolean onCreate() {
+		dbHelper = new UnicefGisDbHelper(getContext());		
+		return true;
+	}
 
 	@Override
 	public int delete(Uri uri, String selection, String[] selectionArgs) {
@@ -20,11 +32,6 @@ public class UnicefGisContentProvider extends ContentProvider {
 	@Override
 	public Uri insert(Uri uri, ContentValues values) {
 		return null;
-	}
-
-	@Override
-	public boolean onCreate() {
-		return true;
 	}
 
 	@Override

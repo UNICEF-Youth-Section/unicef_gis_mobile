@@ -7,7 +7,6 @@ import org.unicef.gis.infrastructure.UnicefGisApi;
 import org.unicef.gis.infrastructure.UnicefGisStore;
 import org.unicef.gis.model.Tag;
 
-import android.content.Intent;
 import android.os.AsyncTask;
 
 public class FetchTagsTask extends AsyncTask<Void, Void, Integer> {

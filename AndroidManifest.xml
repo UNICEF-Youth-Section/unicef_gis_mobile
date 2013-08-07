@@ -77,7 +77,7 @@
         </service>
         
     	<provider
-	        android:name="org.unicef.gis.infrastructure.UnicefGisContentProvider"
+	        android:name="org.unicef.gis.infrastructure.data.UnicefGisContentProvider"
 	        android:authorities="org.unicef.gis.provider"
 	        android:exported="false"
 	        android:syncable="true"/>
