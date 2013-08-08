@@ -1,5 +1,6 @@
 package org.unicef.gis;
 
+import org.unicef.gis.R;
 import org.unicef.gis.infrastructure.UnicefGisStore;
 
 import android.app.Activity;

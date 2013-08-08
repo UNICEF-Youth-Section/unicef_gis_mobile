@@ -24,19 +24,22 @@ public final class R {
         public static final int ic_launcher=0x7f020000;
     }
     public static final class id {
-        public static final int action_settings=0x7f09000c;
+        public static final int action_settings=0x7f09000f;
+        public static final int choose_tags_gridview=0x7f09000e;
         public static final int configure_server_url_button_save=0x7f090002;
         public static final int configure_server_url_edit_url=0x7f090001;
         public static final int configure_server_url_welcome=0x7f090000;
-        public static final int edit_email=0x7f090008;
-        public static final int edit_password=0x7f090009;
-        public static final int fetch_tags_activity_progress=0x7f090003;
-        public static final int fetch_tags_feedback=0x7f090004;
-        public static final int fetch_tags_go_to_network_settings=0x7f090005;
-        public static final int fetch_tags_retry=0x7f090006;
-        public static final int message=0x7f090007;
-        public static final int my_reports_empty_message=0x7f09000b;
-        public static final int my_reports_new_report=0x7f09000a;
+        public static final int create_report_button_bar=0x7f090003;
+        public static final int edit_email=0x7f09000a;
+        public static final int edit_password=0x7f09000b;
+        public static final int fetch_tags_activity_progress=0x7f090005;
+        public static final int fetch_tags_feedback=0x7f090006;
+        public static final int fetch_tags_go_to_network_settings=0x7f090007;
+        public static final int fetch_tags_retry=0x7f090008;
+        public static final int fragment_container=0x7f090004;
+        public static final int message=0x7f090009;
+        public static final int my_reports_empty_message=0x7f09000d;
+        public static final int my_reports_new_report=0x7f09000c;
     }
     public static final class layout {
         public static final int activity_configure_server_url=0x7f030000;
@@ -45,6 +48,7 @@ public final class R {
         public static final int activity_fetch_tags=0x7f030003;
         public static final int activity_login=0x7f030004;
         public static final int activity_my_reports=0x7f030005;
+        public static final int fragment_choose_tags=0x7f030006;
     }
     public static final class menu {
         public static final int display_message=0x7f080000;
@@ -70,6 +74,7 @@ public final class R {
         public static final int retry=0x7f060015;
         public static final int save_address=0x7f060011;
         public static final int something_wrong_fetching_tags=0x7f060016;
+        public static final int tag_your_report=0x7f060019;
         public static final int title_activity_configure_server_url=0x7f06000d;
         public static final int title_activity_display_message=0x7f060006;
         public static final int title_activity_fetch_tags=0x7f06000e;

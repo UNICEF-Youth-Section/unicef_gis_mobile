@@ -33,7 +33,7 @@
             </intent-filter>
         </activity>
         
-        <activity android:name="org.unicef.gis.CreateReportActivity" >
+        <activity android:name="org.unicef.gis.ui.report.CreateReportActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <category android:name="android.intent.category.DEFAULT" />

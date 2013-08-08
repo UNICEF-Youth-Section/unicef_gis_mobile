@@ -25,4 +25,5 @@
 	<string name="something_wrong_fetching_tags">Something went wrong while trying to configure UNICEF GIS. This may be caused by intermittent connection drops. Tap \'Retry\' if you think your connection is working normally. </string>
 	<string name="no_reports">You still haven\'t created any report</string>
 	<string name="new_report">Create Report</string>
+	<string name="tag_your_report">Tag your report</string>
 </resources>
