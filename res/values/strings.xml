@@ -26,4 +26,9 @@
 	<string name="no_reports">You still haven\'t created any report</string>
 	<string name="new_report">Create Report</string>
 	<string name="tag_your_report">Tag your report</string>
+	<string name="back">Back</string>
+	<string name="next">NEXT</string>
+	<string name="cancel">CANCEL</string>
+	<string name="done">DONE</string>
+	<string name="report_title">Report title</string>
 </resources>

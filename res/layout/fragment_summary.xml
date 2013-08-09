@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:padding="8dp"
+    >
+
+    <EditText
+        android:id="@+id/summary_title"
+        android:layout_height="wrap_content" 
+        android:layout_width="fill_parent"
+        android:hint="@string/report_title"
+        />
+    
+    <LinearLayout
+        android:id="@+id/summary_tags"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/summary_location"
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        >
+    </LinearLayout>
+    
+    <LinearLayout
+        android:id="@+id/summary_button_bar"
+        
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonBarStyle"
+        android:layout_gravity="bottom"
+        >
+        <Button
+            android:layout_weight="1"
+	 	    android:layout_width="0dp"
+	        android:layout_height="wrap_content" 
+	        android:id="@+id/summary_cancel"
+	        style="?android:attr/buttonBarButtonStyle"
+	        android:text="@string/cancel"
+	        />
+        
+        <Button
+            android:layout_weight="1"
+	 	    android:layout_width="0dp"
+	        android:layout_height="wrap_content" 
+	        android:id="@+id/summary_done"
+	        android:onClick="onTagsChosen"
+	        style="?android:attr/buttonBarButtonStyle"
+    	    android:text="@string/done"	        
+	        />
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/summary_bottom_border"
+        android:orientation="horizontal"
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="#2697CC"
+        android:layout_gravity="bottom"
+        >
+    </LinearLayout>
+</LinearLayout>
+
