@@ -12,6 +12,7 @@ public class ToggleTagAdapter extends BaseAdapter {
 	private final Context context;
 	
 	private Tag[] tags = new Tag[] { new Tag("Foo"), new Tag("Bar"), new Tag("Baz") };
+	//private Tag[] tags = new Tag[0];
 	
 	public ToggleTagAdapter(Context context) {
 		this.context = context;
@@ -38,15 +39,14 @@ public class ToggleTagAdapter extends BaseAdapter {
 		
         if (convertView == null) {  // if it's not recycled, initialize some attributes
         	toggle = new ToggleButton(context);
-        	//toggle.setLayoutParams(new GridView.LayoutParams(85, 85));
-        	//toggle.setScaleType(ImageView.ScaleType.CENTER_CROP);
         	toggle.setPadding(8, 8, 8, 8);
         	toggle.setText(tags[position].getValue());
+        	toggle.setTextOff(tags[position].getValue());
+        	toggle.setTextOn(tags[position].getValue());
         } else {
         	toggle = (ToggleButton) convertView;
         }
 
         return toggle;
 	}
-
 }
