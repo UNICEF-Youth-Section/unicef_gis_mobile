@@ -21,10 +21,11 @@ public final class R {
         public static final int activity_vertical_margin=0x7f050001;
     }
     public static final class drawable {
-        public static final int ic_launcher=0x7f020000;
+        public static final int collections_labels=0x7f020000;
+        public static final int ic_launcher=0x7f020001;
     }
     public static final class id {
-        public static final int action_settings=0x7f09001a;
+        public static final int action_settings=0x7f09001c;
         public static final int choose_tags_bottom_border=0x7f09000d;
         public static final int choose_tags_button_bar=0x7f09000e;
         public static final int choose_tags_gridview=0x7f090010;
@@ -43,14 +44,16 @@ public final class R {
         public static final int message=0x7f090008;
         public static final int my_reports_empty_message=0x7f09000c;
         public static final int my_reports_new_report=0x7f09000b;
-        public static final int spinning_wheel=0x7f090019;
-        public static final int summary_bottom_border=0x7f090018;
-        public static final int summary_button_bar=0x7f090015;
-        public static final int summary_cancel=0x7f090016;
-        public static final int summary_done=0x7f090017;
-        public static final int summary_location=0x7f090014;
-        public static final int summary_tags=0x7f090013;
-        public static final int summary_title=0x7f090012;
+        public static final int spinning_wheel=0x7f09001b;
+        public static final int summary_bottom_border=0x7f090016;
+        public static final int summary_button_bar=0x7f090017;
+        public static final int summary_cancel=0x7f090018;
+        public static final int summary_done=0x7f090019;
+        public static final int summary_location=0x7f09001a;
+        public static final int summary_picture=0x7f090012;
+        public static final int summary_tags=0x7f090014;
+        public static final int summary_tags_chosen=0x7f090015;
+        public static final int summary_title=0x7f090013;
     }
     public static final class layout {
         public static final int activity_configure_server_url=0x7f030000;
@@ -87,10 +90,15 @@ public final class R {
         public static final int new_report=0x7f060018;
         public static final int next=0x7f06001b;
         public static final int no_reports=0x7f060017;
+        public static final int no_tags_chosen=0x7f060022;
         public static final int please_enter_valid_email_and_password=0x7f06000b;
+        public static final int report_picture=0x7f06001f;
+        public static final int report_tags=0x7f060021;
         public static final int report_title=0x7f06001e;
         public static final int retry=0x7f060015;
         public static final int save_address=0x7f060011;
+        public static final int save_report=0x7f060020;
+        public static final int searching_location=0x7f060023;
         public static final int something_wrong_fetching_tags=0x7f060016;
         public static final int tag_your_report=0x7f060019;
         public static final int title_activity_configure_server_url=0x7f06000d;

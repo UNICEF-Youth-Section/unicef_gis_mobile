@@ -21,12 +21,14 @@ public class ChooseTagsFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		view = inflater.inflate(R.layout.fragment_choose_tags, container, false);
-
+		
+		getActivity().setTitle(R.string.tag_your_report);
+		
 		loadControls();
 		
-		next.setText(R.string.next);
+		next.setText(R.string.next);		
 		
-		gridView.setEmptyView(spinnningWheel);        
+		gridView.setEmptyView(spinnningWheel);
 		
 		setupAdapter();
 		

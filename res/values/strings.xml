@@ -10,11 +10,11 @@
     <string name="hello_world">Hello world!</string>
 	<string name="enter_email">Please enter a valid email address</string>
 	<string name="enter_password">Please enter a password to log in</string>
-	<string name="authenticating">Authenticating...</string>
+	<string name="authenticating">Authenticating&#8230;</string>
 	<string name="please_enter_valid_email_and_password">Please enter a valid email and password</string>
 	<string name="default_api_url">http://buenosaires.unicef-gis.org/api/</string>
 	<string name="title_activity_configure_server_url">Welcome to UNICEF GIS!</string>
-	<string name="title_activity_fetch_tags">Setting up UNICEF GIS...</string>
+	<string name="title_activity_fetch_tags">Setting up UNICEF GIS&#8230;</string>
 	<string name="welcome">Please enter your UNICEF GIS address (for example: rio.unicef-gis.org, nyhq.unicef-gis.org, etc.). \n\nYou\'ll only need to do this once.</string>
 	<string name="example_url">mycity.unicef-gis.org</string>
 	<string name="save_address">Save address</string>
@@ -30,5 +30,10 @@
 	<string name="next">NEXT</string>
 	<string name="cancel">CANCEL</string>
 	<string name="done">DONE</string>
-	<string name="report_title">Report title</string>
+	<string name="report_title">Report description&#8230;</string>
+	<string name="report_picture">Report picture</string>
+	<string name="save_report">Save report</string>
+	<string name="report_tags">Report tags</string>
+	<string name="no_tags_chosen">No tags chosen</string>
+	<string name="searching_location">Searching location&#8230;</string>
 </resources>

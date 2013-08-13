@@ -1,16 +1,23 @@
 package org.unicef.gis.ui.report;
 
+import org.unicef.gis.MyReportsActivity;
 import org.unicef.gis.R;
 
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
+import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 
 public class CreateReportActivity extends Activity {
 	private ChooseTagsFragment tagsFragment;
-	private ReportSummaryFragment reportSummaryFragment; 
+	private ReportSummaryFragment reportSummaryFragment;
+
+	private final int TAKE_PICTURE_INTENT = 10;
+	private Bitmap image;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -23,9 +30,24 @@ public class CreateReportActivity extends Activity {
 		tagsFragment = new ChooseTagsFragment();
 		reportSummaryFragment = new ReportSummaryFragment();
 		
-		moveToTagStep(null);
+		dispatchTakePictureIntent();
+	}
+	
+	private void dispatchTakePictureIntent() {
+		startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), TAKE_PICTURE_INTENT);
+	}
+	
+	@Override
+	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+		if (resultCode == RESULT_CANCELED)
+			startActivity(new Intent(this, MyReportsActivity.class));
 		
-		setTitle(R.string.tag_your_report);
+		if (requestCode != TAKE_PICTURE_INTENT && resultCode != RESULT_OK) 
+			return;
+		
+		Bundle extras = data.getExtras();
+	    image = (Bitmap) extras.get("data");
+	    moveToTagStep(null);
 	}
 	
 	private void moveToAnotherStep(Fragment current, Fragment newFragment) {
@@ -49,5 +71,9 @@ public class CreateReportActivity extends Activity {
 
 	public void onTagsChosen(View view) {
 		moveToSummaryStep(tagsFragment);			
+	}
+
+	public Bitmap getTakenPicture() {
+		return image;
 	}
 }
