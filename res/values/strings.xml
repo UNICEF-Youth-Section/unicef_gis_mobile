@@ -36,4 +36,9 @@
 	<string name="report_tags">Report tags</string>
 	<string name="no_tags_chosen">No tags chosen</string>
 	<string name="searching_location">Searching location&#8230;</string>
+	<string name="description_missing">Description required</string>
+	<string name="description_missing_prompt">Please provide a description for your report.</string>
+	<string name="location_missing">Wait for location retrieval</string>
+	<string name="location_missing_prompt">Please wait until UNICEF GIS gets your current location.</string>
+	<string name="wait">Wait</string>
 </resources>

@@ -86,9 +86,9 @@
 		 	    android:layout_width="0dp"
 		        android:layout_height="wrap_content" 
 		        android:id="@+id/summary_done"
-		        android:onClick="onTagsChosen"
+		        android:onClick="onSaveReport"
 		        style="?android:attr/buttonBarButtonStyle"
-	    	    android:text="@string/done"	        
+	    	    android:text="@string/done"	  	    	          
 		        />
 	    </LinearLayout>
 	    
@@ -107,7 +107,8 @@
 	             android:layout_height="32dp"
 	             android:layout_width="32dp"
 	             android:layout_marginRight="8dp"	
-	             android:background="@android:color/transparent"             
+	             android:background="@android:color/transparent"    
+	             android:id="@+id/summary_progress_bar"         
 	             />
 	        <TextView
 	            android:text="@string/searching_location"
@@ -115,6 +116,7 @@
 	            android:layout_width="wrap_content" 
 	            android:textSize="20sp"
 	            android:background="@android:color/transparent"
+	            android:id="@+id/summary_location_display"
 	            />
 	    </LinearLayout>     
     </RelativeLayout>
