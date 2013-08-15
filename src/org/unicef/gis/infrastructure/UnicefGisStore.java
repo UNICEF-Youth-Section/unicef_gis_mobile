@@ -13,6 +13,8 @@ import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.location.Location;
+import android.net.Uri;
 import android.preference.PreferenceManager;
 
 public class UnicefGisStore {
@@ -74,6 +76,11 @@ public class UnicefGisStore {
 		
 		return tags;
 	}	
+	
+	public void saveReport(String description, Location location, Uri imageUri,
+			List<Tag> tags) {
+		
+	}
 	
 	private void setTagsHaveBeenFetched(boolean value) {
 		writePref(PREF_TAGS_FETCHED, Boolean.valueOf(value));

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <string name="app_name">Unicef GIS</string>
     <string name="edit_email">Email</string>
     <string name="edit_password">Password</string>
@@ -28,7 +28,7 @@
 	<string name="tag_your_report">Tag your report</string>
 	<string name="back">Back</string>
 	<string name="next">NEXT</string>
-	<string name="cancel">CANCEL</string>
+	<string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
 	<string name="done">DONE</string>
 	<string name="report_title">Report description&#8230;</string>
 	<string name="report_picture">Report picture</string>
@@ -40,5 +40,7 @@
 	<string name="description_missing_prompt">Please provide a description for your report.</string>
 	<string name="location_missing">Wait for location retrieval</string>
 	<string name="location_missing_prompt">Please wait until UNICEF GIS gets your current location.</string>
+	<string name="configuration_problem">Configuration problem</string>
+	<string name="configuration_problem_prompt">UNICEF GIS can\'t take pictures. This is due to some problem with your phone\'s configuration. Please contact a UNICEF GIS admin to help you troubleshoot the issue.</string>
 	<string name="wait">Wait</string>
 </resources>

@@ -1,7 +1,16 @@
 package org.unicef.gis.ui.report;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
 import org.unicef.gis.MyReportsActivity;
 import org.unicef.gis.R;
+import org.unicef.gis.infrastructure.Camera;
+import org.unicef.gis.infrastructure.ILocationServiceConsumer;
+import org.unicef.gis.infrastructure.LocationService;
+import org.unicef.gis.infrastructure.UnicefGisStore;
+import org.unicef.gis.model.Tag;
 import org.unicef.gis.ui.AlertDialogFragment;
 
 import android.app.Activity;
@@ -12,40 +21,23 @@ import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient.ConnectionCallbacks;
-import com.google.android.gms.common.GooglePlayServicesClient.OnConnectionFailedListener;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
 
-public class CreateReportActivity extends Activity implements ConnectionCallbacks, OnConnectionFailedListener, LocationListener {	
+public class CreateReportActivity extends Activity implements ILocationServiceConsumer {	
 	private ChooseTagsFragment tagsFragment;
 	private ReportSummaryFragment reportSummaryFragment;	
-
-	private static final int TAKE_PICTURE_INTENT = 10;
+	
 	private static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 11;
 	
-	// Milliseconds per second
-    private static final int MILLISECONDS_PER_SECOND = 1000;
-    // Update frequency in seconds
-    public static final int UPDATE_INTERVAL_IN_SECONDS = 5;
-    // Update frequency in milliseconds
-    private static final long UPDATE_INTERVAL = MILLISECONDS_PER_SECOND * UPDATE_INTERVAL_IN_SECONDS;
-    // The fastest update frequency, in seconds
-    private static final int FASTEST_INTERVAL_IN_SECONDS = 1;
-    // A fast frequency ceiling in milliseconds
-    private static final long FASTEST_INTERVAL = MILLISECONDS_PER_SECOND * FASTEST_INTERVAL_IN_SECONDS;
-    
-    private LocationClient locationClient;
-    private LocationRequest locationRequest;
+	private LocationService locationService;
 	
-	private Bitmap image;
+	private Bitmap imageThumbnail = null;
+	private File imageFile;
 	private Location location = null;	
 	
 	@Override
@@ -53,49 +45,49 @@ public class CreateReportActivity extends Activity implements ConnectionCallback
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_report);
 				
-		loadFragments();
+		loadFragments();		
+		loadLocationService();
 		
-		loadLocationService();		
-		
-		dispatchTakePictureIntent();
+		tryToTakePicture();
 	}
 
-	private void loadLocationService() {
-		locationRequest = LocationRequest.create();
-		locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-		locationRequest.setInterval(UPDATE_INTERVAL);
-		locationRequest.setFastestInterval(FASTEST_INTERVAL);
-		
-		locationClient = new LocationClient(this, this, this);
-	}
-
-	private void loadFragments() {
-		tagsFragment = new ChooseTagsFragment();
-		reportSummaryFragment = new ReportSummaryFragment();
+	private void tryToTakePicture() {
+		try {
+			Camera camera = new Camera(this);		
+			imageFile = camera.takePicture();
+		} catch (IOException e) {
+			showAlertDialog(R.string.configuration_problem, R.string.configuration_problem_prompt, "configuration_problem");
+			e.printStackTrace();
+			finish();
+		}
 	}
 	
 	@Override
 	protected void onStart() {
 		super.onStart();
-		locationClient.connect();
+		locationService.start();
 	}
 	
 	@Override
 	protected void onStop() {
-		if (locationClient.isConnected())
-			locationClient.removeLocationUpdates(this);
-		
-		locationClient.disconnect();
+		locationService.stop();		
 		super.onStop();
 	}
 	
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if (servicesConnected()) {
-			
-		}
+		servicesConnected();
 	}
+	
+	private void loadLocationService() {
+		locationService = new LocationService(this, this);
+	}
+
+	private void loadFragments() {
+		tagsFragment = new ChooseTagsFragment();
+		reportSummaryFragment = new ReportSummaryFragment();
+	}	
 	
 	private boolean servicesConnected() {
 		// Check that Google Play services is available        
@@ -119,10 +111,6 @@ public class CreateReportActivity extends Activity implements ConnectionCallback
 	  GooglePlayServicesUtil.getErrorDialog(code, this, REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
 	}
 	
-	private void dispatchTakePictureIntent() {
-		startActivityForResult(new Intent(MediaStore.ACTION_IMAGE_CAPTURE), TAKE_PICTURE_INTENT);
-	}
-	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == REQUEST_CODE_RECOVER_PLAY_SERVICES){
@@ -133,11 +121,12 @@ public class CreateReportActivity extends Activity implements ConnectionCallback
 		if (resultCode == RESULT_CANCELED)
 			startActivity(new Intent(this, MyReportsActivity.class));
 		
-		if (requestCode != TAKE_PICTURE_INTENT && resultCode != RESULT_OK) 
-			return;
+		if (requestCode != Camera.TAKE_PICTURE_INTENT && resultCode != RESULT_OK) 
+			return;		
 		
-		Bundle extras = data.getExtras();
-	    image = (Bitmap) extras.get("data");
+		Camera camera = new Camera(this);
+		camera.addPicToGallery(imageFile);
+				
 	    moveToTagStep(null);
 	}
 	
@@ -172,8 +161,13 @@ public class CreateReportActivity extends Activity implements ConnectionCallback
 		moveToSummaryStep(tagsFragment);			
 	}
 
-	public Bitmap getTakenPicture() {
-		return image;
+	public Bitmap getTakenPictureThumbnail(ImageView imageView) {
+		if (imageThumbnail == null){
+			Camera camera = new Camera(this);
+			imageThumbnail = camera.getThumbnail(imageFile, imageView.getWidth(), imageView.getHeight());
+		}
+		
+		return imageThumbnail;
 	}
 
 	@Override
@@ -209,12 +203,12 @@ public class CreateReportActivity extends Activity implements ConnectionCallback
 
 	@Override
 	public void onConnected(Bundle connectionHint) {
-        locationClient.requestLocationUpdates(locationRequest, this);
+		locationService.playServicesConnected();        
 	}
 
 	@Override
 	public void onDisconnected() {
-		locationClient.connect();
+		locationService.playServicesDisconnected();		
 	}
 
 	@Override
@@ -232,8 +226,15 @@ public class CreateReportActivity extends Activity implements ConnectionCallback
 	}
 
 	private void saveReport() {
-		// TODO Auto-generated method stub
+		String description = reportSummaryFragment.getReportDescription();
+		List<Tag> tags = null;
 		
+		Camera camera = new Camera(this);		
+		UnicefGisStore store = new UnicefGisStore(this);
+		
+		store.saveReport(description, location, camera.getUri(imageFile), tags);
+		
+		finish();
 	}
 
 	private boolean validate() {

@@ -3,6 +3,7 @@ package org.unicef.gis.ui.report;
 import org.unicef.gis.R;
 
 import android.app.Fragment;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -26,13 +27,17 @@ public class ReportSummaryFragment extends Fragment {
 		
 		loadControls();
 		
-		getActivity().setTitle(R.string.save_report);
-		
-		setupImage();
+		getActivity().setTitle(R.string.save_report);		
 		
 		return view;
 	}
-
+	
+	@Override
+	public void onResume() {
+		setupImage();
+		super.onResume();
+	}
+	
 	private void loadControls() {
 		if (getActivity() == null) return;
 		
@@ -48,7 +53,7 @@ public class ReportSummaryFragment extends Fragment {
 		
 		CreateReportActivity activity = (CreateReportActivity) getActivity();
 		
-		imageView.setImageBitmap(activity.getTakenPicture());		
+		imageView.setImageBitmap(activity.getTakenPictureThumbnail(imageView));		
 	}
 
 	public void setLocation(Location location) {
@@ -67,6 +72,14 @@ public class ReportSummaryFragment extends Fragment {
 
 	public String getReportDescription() {
 		return reportDescription.getText().toString();
+	}
+
+	public ImageView getImageView() {
+		return imageView;
+	}
+
+	public void setImage(Bitmap takenPictureThumbnail) {
+		imageView.setImageBitmap(takenPictureThumbnail);
 	}
 
 }

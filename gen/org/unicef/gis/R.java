@@ -320,6 +320,8 @@ containing a value of this type.
         /**  Long form sign-in button text [CHAR LIMIT=30] 
          */
         public static final int common_signin_button_text_long=0x7f07000e;
+        public static final int configuration_problem=0x7f07003d;
+        public static final int configuration_problem_prompt=0x7f07003e;
         public static final int default_api_url=0x7f070021;
         public static final int description_missing=0x7f070039;
         public static final int description_missing_prompt=0x7f07003a;
@@ -352,7 +354,7 @@ containing a value of this type.
         public static final int title_activity_display_message=0x7f07001b;
         public static final int title_activity_fetch_tags=0x7f070023;
         public static final int title_activity_login=0x7f07001a;
-        public static final int wait=0x7f07003d;
+        public static final int wait=0x7f07003f;
         public static final int wait_configuring=0x7f070027;
         public static final int welcome=0x7f070024;
     }
