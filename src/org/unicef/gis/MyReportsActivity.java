@@ -6,6 +6,7 @@ import org.unicef.gis.infrastructure.ServerUrlPreferenceNotSetException;
 import org.unicef.gis.infrastructure.UnicefGisStore;
 import org.unicef.gis.infrastructure.data.UnicefGisDbContract;
 import org.unicef.gis.ui.report.CreateReportActivity;
+import org.unicef.gis.ui.report.ReportRowAdapter;
 
 import android.app.ListActivity;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -25,15 +26,19 @@ import android.widget.TextView;
 public class MyReportsActivity extends ListActivity implements LoaderCallbacks<Cursor> {	
 	private TextView emptyView;
 	private Button newReportButton;
-	private SimpleCursorAdapter dbAdapter;
+	private ReportRowAdapter dbAdapter;
 	private View originalEmptyView;
 	private ProgressBar progressBar;
+	
+	private boolean justCreated;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_reports);
 				
+		justCreated = true;
+		
 		loadControls();
 		
 		emptyView.setText(R.string.no_reports);
@@ -45,15 +50,25 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<C
 			setupAdapter();
 	}
 	
+	@Override
+	protected void onResume() {
+		if (!justCreated)
+			getLoaderManager().restartLoader(0, null, this);
+		
+		justCreated = false;
+		
+		super.onResume();
+	}
+	
 	public void startCreateReportActivity(View view) {
 		startActivity(new Intent(this, CreateReportActivity.class));
 	}
 	
 	private void setupAdapter() {
-		String[] fromColumns = { UnicefGisDbContract.Report.COLUMN_NAME_TITLE };
-		int[] toViews = { android.R.id.text1 };
+		String[] fromColumns = { UnicefGisDbContract.Report.COLUMN_NAME_IMAGE, UnicefGisDbContract.Report.COLUMN_NAME_TITLE };
+		int[] toViews = { R.id.row_report_thumbnail, R.id.row_report_description };
 		
-		dbAdapter = new SimpleCursorAdapter(this, android.R.layout.simple_expandable_list_item_1, null, fromColumns, toViews, 0);
+		dbAdapter = new ReportRowAdapter(this, R.layout.row_report, null, fromColumns, toViews, 0);
 		setListAdapter(dbAdapter);
 		
 		getLoaderManager().initLoader(0, null, this);

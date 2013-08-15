@@ -1,7 +1,12 @@
 package org.unicef.gis.infrastructure;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
+import java.util.TimeZone;
+import java.util.UUID;
 
 import org.unicef.gis.infrastructure.data.UnicefGisDbContract;
 import org.unicef.gis.infrastructure.data.UnicefGisDbHelper;
@@ -34,6 +39,44 @@ public class UnicefGisStore {
 		return readPref(PREF_TAGS_FETCHED, Boolean.valueOf(false));
 	}
 	
+	public void saveReport(String description, Location location, Uri imageUri,
+			List<String> tags) {
+		UnicefGisDbHelper dbHelper = new UnicefGisDbHelper(context);
+		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		
+		ContentValues values = new ContentValues();
+		values.put(UnicefGisDbContract.Report.COLUMN_NAME_GUID, generateGuid());
+		values.put(UnicefGisDbContract.Report.COLUMN_NAME_TITLE, description);
+		values.put(UnicefGisDbContract.Report.COLUMN_NAME_LAT, location.getLatitude());
+		values.put(UnicefGisDbContract.Report.COLUMN_NAME_LONG, location.getLongitude());
+		values.put(UnicefGisDbContract.Report.COLUMN_NAME_IMAGE, imageUri.toString());
+		values.put(UnicefGisDbContract.Report.COLUMN_NAME_TAGS, asCommaSeparated(tags));
+		values.put(UnicefGisDbContract.Report.COLUMN_NAME_TIMESTAMP, generateTimestamp());
+		
+		db.insert(UnicefGisDbContract.Report.TABLE_NAME, "null", values);
+	}
+	
+	private String generateTimestamp() {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
+		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+		return dateFormat.format(new Date());		
+	}
+
+	private String asCommaSeparated(List<String> tags) {
+		StringBuffer sb = new StringBuffer("");
+		for (String string : tags) {
+			if (sb.length() != 0) 
+				sb.append(",");
+			
+			sb.append(string);
+		}
+		return sb.toString();
+	}
+
+	private String generateGuid() {
+		return UUID.randomUUID().toString();
+	}
+
 	public void saveTags(List<Tag> tags) {
 		UnicefGisDbHelper dbHelper = new UnicefGisDbHelper(context);
 		SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -45,13 +88,22 @@ public class UnicefGisStore {
 			ContentValues values = new ContentValues();
 			values.put(UnicefGisDbContract.Tag.COLUMN_NAME_NAME, tag.getValue());
 
-			db.insert(
-			         UnicefGisDbContract.Tag.TABLE_NAME,
-			         "null",
-			         values);
+			db.insert(UnicefGisDbContract.Tag.TABLE_NAME, "null", values);
 		}
 
-		setTagsHaveBeenFetched(true);
+		setTagsHaveBeenFetched(true);		
+	}
+	
+	public Cursor getReportsCursor() {
+		UnicefGisDbHelper dbHelper = new UnicefGisDbHelper(context);
+		SQLiteDatabase db = dbHelper.getReadableDatabase();
+		
+		String[] projection = UnicefGisDbContract.Report.DEFAULT_PROJECTION;
+		String sortOrder = UnicefGisDbContract.Report.COLUMN_NAME_TIMESTAMP + " DESC";
+		String selection = "1=1";
+		String[] selectionArgs = new String[0];
+		
+		return db.query(UnicefGisDbContract.Report.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
 	}
 	
 	public List<Tag> retrieveTags() {
@@ -77,11 +129,6 @@ public class UnicefGisStore {
 		return tags;
 	}	
 	
-	public void saveReport(String description, Location location, Uri imageUri,
-			List<Tag> tags) {
-		
-	}
-	
 	private void setTagsHaveBeenFetched(boolean value) {
 		writePref(PREF_TAGS_FETCHED, Boolean.valueOf(value));
 	}
@@ -104,5 +151,5 @@ public class UnicefGisStore {
 			prefsEditor.putBoolean(key, (Boolean) value);
 
 		prefsEditor.commit();
-	}
+	}	
 }

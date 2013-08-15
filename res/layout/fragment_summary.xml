@@ -59,7 +59,7 @@
 	        android:orientation="horizontal"
 	        android:layout_height="1dp"
 	        android:layout_width="match_parent"
-	        android:background="#2697CC"
+	        android:background="#33B5E5"
 	        android:layout_alignParentBottom="true"
 	        >
 	    </LinearLayout>

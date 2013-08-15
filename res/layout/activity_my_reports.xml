@@ -3,8 +3,8 @@
          android:orientation="vertical"
          android:layout_width="match_parent"
          android:layout_height="match_parent"
-         android:paddingLeft="8dp"
-         android:paddingRight="8dp">
+         android:paddingLeft="4dp"
+         android:paddingRight="4dp">
 
      <Button
          android:id="@+id/my_reports_new_report"
@@ -17,8 +17,7 @@
      
      <ListView android:id="@android:id/list"
                android:layout_width="match_parent"
-               android:layout_height="fill_parent"
-               android:background="#00FF00"               
+               android:layout_height="fill_parent"               
                android:drawSelectorOnTop="false"
                android:layout_above="@id/my_reports_new_report"/>
       

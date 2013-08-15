@@ -183,7 +183,7 @@ containing a value of this type.
         public static final int ic_launcher=0x7f020019;
     }
     public static final class id {
-        public static final int action_settings=0x7f060023;
+        public static final int action_settings=0x7f060025;
         public static final int choose_tags_bottom_border=0x7f060012;
         public static final int choose_tags_button_bar=0x7f060013;
         public static final int choose_tags_gridview=0x7f060015;
@@ -205,8 +205,10 @@ containing a value of this type.
         public static final int my_reports_new_report=0x7f060010;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
+        public static final int row_report_description=0x7f060023;
+        public static final int row_report_thumbnail=0x7f060022;
         public static final int satellite=0x7f060002;
-        public static final int spinning_wheel=0x7f060022;
+        public static final int spinning_wheel=0x7f060024;
         public static final int summary_bottom_border=0x7f06001b;
         public static final int summary_button_bar=0x7f06001c;
         public static final int summary_cancel=0x7f06001d;
@@ -229,7 +231,8 @@ containing a value of this type.
         public static final int activity_my_reports=0x7f030005;
         public static final int fragment_choose_tags=0x7f030006;
         public static final int fragment_summary=0x7f030007;
-        public static final int spinning_wheel=0x7f030008;
+        public static final int row_report=0x7f030008;
+        public static final int spinning_wheel=0x7f030009;
     }
     public static final class menu {
         public static final int display_message=0x7f0a0000;

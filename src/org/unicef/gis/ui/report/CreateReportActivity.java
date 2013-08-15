@@ -10,7 +10,6 @@ import org.unicef.gis.infrastructure.Camera;
 import org.unicef.gis.infrastructure.ILocationServiceConsumer;
 import org.unicef.gis.infrastructure.LocationService;
 import org.unicef.gis.infrastructure.UnicefGisStore;
-import org.unicef.gis.model.Tag;
 import org.unicef.gis.ui.AlertDialogFragment;
 
 import android.app.Activity;
@@ -227,7 +226,7 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 
 	private void saveReport() {
 		String description = reportSummaryFragment.getReportDescription();
-		List<Tag> tags = null;
+		List<String> tags = getChosenTags();
 		
 		Camera camera = new Camera(this);		
 		UnicefGisStore store = new UnicefGisStore(this);
@@ -262,5 +261,9 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		dialog.setTitle(title);
 		dialog.setPrompt(prompt);
 		dialog.show(getFragmentManager(), tag);
+	}
+
+	public List<String> getChosenTags() {
+		return tagsFragment.getChosenTags();
 	}
 }

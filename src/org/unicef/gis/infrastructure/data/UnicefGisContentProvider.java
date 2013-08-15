@@ -1,21 +1,17 @@
 package org.unicef.gis.infrastructure.data;
 
+import org.unicef.gis.infrastructure.UnicefGisStore;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 
 public class UnicefGisContentProvider extends ContentProvider {
 	public final static String AUTHORITY = "org.unicef.gis.provider";
 	
-	private UnicefGisDbHelper dbHelper;
-	private SQLiteDatabase db;
-	
 	@Override
-	public boolean onCreate() {
-		dbHelper = new UnicefGisDbHelper(getContext());		
+	public boolean onCreate() {		
 		return true;
 	}
 
@@ -37,7 +33,15 @@ public class UnicefGisContentProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
+		if (uri.equals(UnicefGisDbContract.Report.CONTENT_URI))
+			return queryReports();
+					
 		return null;
+	}
+	
+	private Cursor queryReports() {
+		UnicefGisStore store = new UnicefGisStore(getContext());
+		return store.getReportsCursor();
 	}
 
 	@Override

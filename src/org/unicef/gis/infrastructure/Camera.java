@@ -8,6 +8,7 @@ import java.util.Date;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
+import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -20,7 +21,7 @@ import android.util.Log;
 public class Camera {
 	public static final int TAKE_PICTURE_INTENT = 10;
 
-	private static final int DEFAULT_SCALE_FACTOR = 0;
+	private static final int DEFAULT_SCALE_FACTOR = 4;
 	
 	private static String UNICEF_GIS_ALBUM = "UNICEF-GIS-ALBUM";
 	private static String JPEG_PREFIX = "pic";
@@ -43,7 +44,12 @@ public class Camera {
 		
 		return f;
 	}
-
+	
+	//Expects a uri of the form file://FILE_PATH
+	private File fileFromUri(Uri uri) {
+		return new File(uri.toString().substring(8));
+	}
+	
 	public void addPicToGallery(File imageFile) {
 	    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 	    mediaScanIntent.setData(Uri.fromFile(imageFile));
@@ -79,6 +85,10 @@ public class Camera {
 		Bitmap originalBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 		return tryToRotate(imageFile, originalBitmap);
 	}
+	
+	public Bitmap getThumbnail(Uri imageUri, int width, int height) {
+        return getThumbnail(fileFromUri(imageUri), width, height);
+	}	
 
 	private Bitmap tryToRotate(File imageFile, Bitmap bitmap) {
 		try {
