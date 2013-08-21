@@ -10,9 +10,12 @@
          android:id="@+id/my_reports_new_report"
          android:layout_gravity="center"
          android:layout_width="match_parent"
-         android:layout_height="wrap_content"
+		 android:layout_height="56dp"
          android:layout_alignParentBottom="true"
          android:onClick="startCreateReportActivity" 
+         android:background="@android:color/holo_blue_light"    
+         android:textStyle="bold"
+         android:textSize="20sp"           
          />
      
      <ListView android:id="@android:id/list"
@@ -33,9 +36,9 @@
      	<TextView 
      	    	android:id="@+id/my_reports_empty_message"	
 	            android:layout_width="match_parent"
-	           	android:layout_height="match_parent"
+	           	android:layout_height="wrap_content"
 	           	android:gravity="center"
-	           	android:layout_gravity="center"               
+	           	android:layout_gravity="center"
                />    
       </LinearLayout>
  </RelativeLayout>

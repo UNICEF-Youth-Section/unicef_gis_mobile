@@ -1,6 +1,5 @@
 package org.unicef.gis;
 
-import org.unicef.gis.R;
 import org.unicef.gis.infrastructure.RoutesResolver;
 import org.unicef.gis.infrastructure.ServerUrlPreferenceNotSetException;
 import org.unicef.gis.infrastructure.UnicefGisStore;
@@ -9,6 +8,7 @@ import org.unicef.gis.ui.report.CreateReportActivity;
 import org.unicef.gis.ui.report.ReportRowAdapter;
 
 import android.app.ListActivity;
+import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.CursorLoader;
 import android.content.Intent;
@@ -20,43 +20,60 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.Button;
 import android.widget.ProgressBar;
-import android.widget.SimpleCursorAdapter;
 import android.widget.TextView;
 
 public class MyReportsActivity extends ListActivity implements LoaderCallbacks<Cursor> {	
+	private static final int LOADER_ID = 111; 
+	
 	private TextView emptyView;
 	private Button newReportButton;
 	private ReportRowAdapter dbAdapter;
-	private View originalEmptyView;
 	private ProgressBar progressBar;
 	
-	private boolean justCreated;
-	
+	//There seems to be a bug in the way loaders interact with the activity lifecycle, 
+	//which forces us to call loaders onCreate, so we use this flag in order not to
+	//restart loaders twice when we come back to this activity from another one without
+	//recreating it.
+	private boolean justCreated = false;
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_reports);
-				
-		justCreated = true;
 		
+		justCreated = true;
+						
 		loadControls();
 		
 		emptyView.setText(R.string.no_reports);
-		newReportButton.setText(R.string.new_report);
+		newReportButton.setText(R.string.new_report);	
 		
+		if (checkAddressPreference() && checkTags()){			
+			setupAdapter();										
+			refreshData();
+		}
+	}
+
+	private void refreshData() {
 		displaySpinningWheelWhileLoading();
+		dbAdapter.notifyDataSetChanged();
+		getListView().invalidateViews();
 		
-		if (checkAddressPreference() && checkTags())
-			setupAdapter();
+		LoaderManager lm = getLoaderManager();
+		if (lm.getLoader(LOADER_ID) != null) {        	
+			lm.restartLoader(LOADER_ID, null, this);
+		} else {
+			lm.initLoader(LOADER_ID, null, this);        	
+		}
 	}
 	
 	@Override
 	protected void onResume() {
 		if (!justCreated)
-			getLoaderManager().restartLoader(0, null, this);
-		
+			refreshData();			
+
 		justCreated = false;
-		
+				
 		super.onResume();
 	}
 	
@@ -69,19 +86,14 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<C
 		int[] toViews = { R.id.row_report_thumbnail, R.id.row_report_description };
 		
 		dbAdapter = new ReportRowAdapter(this, R.layout.row_report, null, fromColumns, toViews, 0);
-		setListAdapter(dbAdapter);
-		
-		getLoaderManager().initLoader(0, null, this);
+		setListAdapter(dbAdapter);				
 	}
 
 	private void displaySpinningWheelWhileLoading() {
-		originalEmptyView = getListView().getEmptyView();
-		
 		// Create a progress bar to display while the list loads
         progressBar = new ProgressBar(this);
         progressBar.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
         progressBar.setIndeterminate(true);
-        getListView().setEmptyView(progressBar);
         
         // Must add the progress bar to the root of the layout
         ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
@@ -126,7 +138,6 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<C
 	@Override
 	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
 		dbAdapter.swapCursor(data);
-		getListView().setEmptyView(originalEmptyView);
 		
 		ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
         root.removeView(progressBar);

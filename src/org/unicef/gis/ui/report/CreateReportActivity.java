@@ -6,10 +6,10 @@ import java.util.List;
 
 import org.unicef.gis.MyReportsActivity;
 import org.unicef.gis.R;
-import org.unicef.gis.infrastructure.Camera;
 import org.unicef.gis.infrastructure.ILocationServiceConsumer;
 import org.unicef.gis.infrastructure.LocationService;
 import org.unicef.gis.infrastructure.UnicefGisStore;
+import org.unicef.gis.infrastructure.image.Camera;
 import org.unicef.gis.ui.AlertDialogFragment;
 
 import android.app.Activity;
@@ -32,6 +32,8 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 	private ReportSummaryFragment reportSummaryFragment;	
 	
 	private static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 11;
+	private static final int SUMMARY_VIEW_THUMBNAIL_FACTOR = 4;
+	private static final String BUNDLE_IMAGE_FILE = "bundle_key_image_file_path";
 	
 	private LocationService locationService;
 	
@@ -45,11 +47,9 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		setContentView(R.layout.activity_create_report);
 				
 		loadFragments();		
-		loadLocationService();
-		
-		tryToTakePicture();
+		loadLocationService();				
 	}
-
+	
 	private void tryToTakePicture() {
 		try {
 			Camera camera = new Camera(this);		
@@ -60,6 +60,25 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 			finish();
 		}
 	}
+	
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		if (imageFile != null)
+			outState.putString(BUNDLE_IMAGE_FILE, imageFile.getAbsolutePath());
+		
+		super.onSaveInstanceState(outState);		
+	}
+	
+	@Override
+	protected void onRestoreInstanceState(Bundle savedInstanceState) {
+		super.onRestoreInstanceState(savedInstanceState);
+		
+		String savedImageFilePath = savedInstanceState.getString(BUNDLE_IMAGE_FILE);
+		if (savedImageFilePath != null) {
+			imageFile = new File(savedImageFilePath);
+		}
+	}
+	
 	
 	@Override
 	protected void onStart() {
@@ -76,7 +95,13 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 	@Override
 	protected void onResume() {
 		super.onResume();
+				
 		servicesConnected();
+		
+		if (imageFile == null)
+			tryToTakePicture();		
+		else
+			moveToTagStep(null);		
 	}
 	
 	private void loadLocationService() {
@@ -145,6 +170,8 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		else
 			tx.replace(R.id.fragment_container, newFragment);
 			
+		tx.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
+		tx.addToBackStack(null);
 		tx.commit();
 	}
 	
@@ -163,7 +190,7 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 	public Bitmap getTakenPictureThumbnail(ImageView imageView) {
 		if (imageThumbnail == null){
 			Camera camera = new Camera(this);
-			imageThumbnail = camera.getThumbnail(imageFile, imageView.getWidth(), imageView.getHeight());
+			imageThumbnail = camera.getThumbnail(imageFile, SUMMARY_VIEW_THUMBNAIL_FACTOR);
 		}
 		
 		return imageThumbnail;

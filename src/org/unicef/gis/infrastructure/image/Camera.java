@@ -1,14 +1,16 @@
-package org.unicef.gis.infrastructure;
+package org.unicef.gis.infrastructure.image;
 
 import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.unicef.gis.R;
+
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Intent;
-import android.database.Cursor;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -19,9 +21,12 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 public class Camera {
+	public static final Bitmap PLACEHOLDER;
+	static {
+		PLACEHOLDER = loadPlaceholder();
+	}	  
+	
 	public static final int TAKE_PICTURE_INTENT = 10;
-
-	private static final int DEFAULT_SCALE_FACTOR = 4;
 	
 	private static String UNICEF_GIS_ALBUM = "UNICEF-GIS-ALBUM";
 	private static String JPEG_PREFIX = "pic";
@@ -33,6 +38,10 @@ public class Camera {
 		this.activity = activity;
 	}
 	
+	private static Bitmap loadPlaceholder() {
+		return BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.content_picture);
+	}
+
 	public File takePicture() throws IOException {
 		File f = createImageFile();
 		Uri uri = Uri.fromFile(f);
@@ -77,17 +86,17 @@ public class Camera {
 		return albumDir;
 	}
 
-	public Bitmap getThumbnail(File imageFile, int targetWidth, int targetHeight) {	
+	public Bitmap getThumbnail(File imageFile, int scaleFactor) {	
 		BitmapFactory.Options options = new BitmapFactory.Options();
 		options.inJustDecodeBounds = false;		
-		options.inSampleSize = DEFAULT_SCALE_FACTOR;
+		options.inSampleSize = scaleFactor;
 	    
 		Bitmap originalBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 		return tryToRotate(imageFile, originalBitmap);
 	}
 	
-	public Bitmap getThumbnail(Uri imageUri, int width, int height) {
-        return getThumbnail(fileFromUri(imageUri), width, height);
+	public Bitmap getThumbnail(Uri imageUri, int scaleFactor) {
+        return getThumbnail(fileFromUri(imageUri), scaleFactor);
 	}	
 
 	private Bitmap tryToRotate(File imageFile, Bitmap bitmap) {

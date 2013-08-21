@@ -16,5 +16,8 @@
         android:id="@+id/row_report_description"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        android:textColor="@android:color/white"
+        android:textSize="18sp"
+        android:padding="4dp"
         />
 </LinearLayout>
