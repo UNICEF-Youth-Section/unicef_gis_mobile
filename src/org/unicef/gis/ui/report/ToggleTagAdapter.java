@@ -1,5 +1,6 @@
 package org.unicef.gis.ui.report;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.unicef.gis.model.Tag;
@@ -8,15 +9,19 @@ import android.content.Context;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
 
-public class ToggleTagAdapter extends BaseAdapter implements IGetTagsCallback {
+public class ToggleTagAdapter extends BaseAdapter implements OnCheckedChangeListener {
 	private final Context context;
 	
+	private ArrayList<String> chosenTags;
 	private List<Tag> tags;
 	
 	public ToggleTagAdapter(Context context) {
 		this.context = context;
+		chosenTags = new ArrayList<String>();
 	}
 	
 	@Override
@@ -44,21 +49,38 @@ public class ToggleTagAdapter extends BaseAdapter implements IGetTagsCallback {
         	toggle.setText(getItem(position).getValue());
         	toggle.setTextOff(getItem(position).getValue());
         	toggle.setTextOn(getItem(position).getValue());
+        	
+        	toggle.setOnCheckedChangeListener(this);
+        	
         } else {
         	toggle = (ToggleButton) convertView;
         }
+        
+        toggle.setChecked(chosenTags.contains(getItem(position).getValue()));
 
         return toggle;
 	}
+	
+	public void setAvailableTags(List<Tag> availableTags) {
+		this.tags = availableTags;
+		notifyDataSetChanged();
+	}
 
-	public void refresh() {
-		GetTagsTask getTagsTask = new GetTagsTask(context, this); 
-		getTagsTask.execute();
+	public void setChosenTags(ArrayList<String> chosenTags) {
+		this.chosenTags = chosenTags == null ? new ArrayList<String>() : chosenTags;
+		notifyDataSetChanged();
 	}
 
 	@Override
-	public void onGetTagsResult(List<Tag> result) {
-		tags = result;
-		notifyDataSetChanged();
+	public void onCheckedChanged(CompoundButton button, boolean isChecked) {
+		if (isChecked && !chosenTags.contains(button.getText().toString()))
+			chosenTags.add(button.getText().toString());
+		
+		if (!isChecked && chosenTags.contains(button.getText().toString()))
+			chosenTags.remove(button.getText().toString());
+	}
+
+	public ArrayList<String> getChosenTags() {
+		return chosenTags;
 	}
 }

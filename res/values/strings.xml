@@ -13,9 +13,9 @@
 	<string name="authenticating">Authenticating&#8230;</string>
 	<string name="please_enter_valid_email_and_password">Please enter a valid email and password</string>
 	<string name="default_api_url">http://buenosaires.unicef-gis.org/api/</string>
-	<string name="title_activity_configure_server_url">Welcome to UNICEF GIS!</string>
+	<string name="title_activity_configure_server_url">Location activation with UNICEF-GIS</string>
 	<string name="title_activity_fetch_tags">Setting up UNICEF GIS&#8230;</string>
-	<string name="welcome">Please enter your UNICEF GIS address (for example: rio.unicef-gis.org, nyhq.unicef-gis.org, etc.). \n\nYou\'ll only need to do this once.</string>
+	<string name="welcome">Please designate the digital map powered by UNICEF-GIS where reports from this app will be sent (example: rio.unicef-gis.org, nyhq.unicef-gis.org, etc.). \n\nYou\'ll only need to do this once.</string>
 	<string name="example_url">mycity.unicef-gis.org</string>
 	<string name="save_address">Save address</string>
 	<string name="wait_configuring">Please wait while we configure UNICEF GIS</string>
@@ -30,14 +30,14 @@
 	<string name="next">NEXT</string>
 	<string name="cancel" tools:ignore="ButtonCase">CANCEL</string>
 	<string name="done">DONE</string>
-	<string name="report_title">Report description&#8230;</string>
+	<string name="report_title">Report title&#8230;</string>
 	<string name="report_picture">Report picture</string>
 	<string name="save_report">Save report</string>
 	<string name="report_tags">Report tags</string>
 	<string name="no_tags_chosen">No tags chosen</string>
 	<string name="searching_location">Searching location&#8230;</string>
-	<string name="description_missing">Description required</string>
-	<string name="description_missing_prompt">Please provide a description for your report.</string>
+	<string name="description_missing">Title required</string>
+	<string name="description_missing_prompt">Please provide a title for your report.</string>
 	<string name="location_missing">Wait for location retrieval</string>
 	<string name="location_missing_prompt">Please wait until UNICEF GIS gets your current location.</string>
 	<string name="configuration_problem">Configuration problem</string>

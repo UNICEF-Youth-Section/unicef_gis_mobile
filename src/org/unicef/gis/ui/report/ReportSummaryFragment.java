@@ -8,6 +8,7 @@ import android.app.Fragment;
 import android.content.Context;
 import android.location.Location;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,8 @@ public class ReportSummaryFragment extends Fragment {
 	private ProgressBar progressBar;
 	private TextView reportDescription;
 	private TextView tagsView;
+	
+	private String description = null;
 
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -49,9 +52,16 @@ public class ReportSummaryFragment extends Fragment {
 	public void onResume() {
 		setupImage();
 		refreshTags();
+		refreshDescription();
 		super.onResume();
 	}
 	
+	private void refreshDescription() {
+		Log.d("ReportSummaryFragment", "Setting description to: " + (description == null ? "null" : description));
+		
+		reportDescription.setText(description);
+	}
+
 	private void refreshTags() {
 		if (getActivity() == null) return;
 		if (!(getActivity() instanceof CreateReportActivity)) return;
@@ -106,6 +116,18 @@ public class ReportSummaryFragment extends Fragment {
 	}
 
 	public String getReportDescription() {
+		if (reportDescription == null) return null;
+		
 		return reportDescription.getText().toString();
+	}
+
+	public void setReportDescription(String description) {
+		Log.d("ReportSummaryFragment", "Setting description field to: " + (description == null ? "null" : description));
+
+		this.description = description; 
+		
+		if (reportDescription != null && description != null && !description.isEmpty()){
+			reportDescription.setText(description);
+		}
 	}
 }

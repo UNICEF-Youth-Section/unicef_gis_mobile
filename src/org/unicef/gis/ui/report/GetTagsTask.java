@@ -9,12 +9,12 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 public class GetTagsTask extends AsyncTask<Void, Void, List<Tag>> {
-	private final Context context;
 	private final IGetTagsCallback callback;
+	private final Context context;
 
 	public GetTagsTask(Context context, IGetTagsCallback callback) {
-		this.context = context;
 		this.callback = callback;
+		this.context = context;
 	}
 
 	@Override
