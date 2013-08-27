@@ -26,7 +26,7 @@ public class FetchTagsTask extends AsyncTask<Void, Void, Integer> {
 			List<Tag> tags = api.getTags();
 			
 			UnicefGisStore store = new UnicefGisStore(context);
-			store.saveTags(tags);	
+			store.saveTags(tags);			
 		} catch (ServerUrlPreferenceNotSetException e) {
 			return SERVER_URL_PREFERENCE_NOT_SET;
 		}

@@ -39,6 +39,8 @@ public class UnicefGisContentProvider extends ContentProvider {
 		return null;
 	}
 	
+	//TODO: the store should return a custom Cursor dettached from the original DB instance, so that
+	//we don't risk leaking databases.
 	private Cursor queryReports() {
 		UnicefGisStore store = new UnicefGisStore(getContext());
 		return store.getReportsCursor();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">Unicef GIS</string>
+    <string name="app_name">Voices of Youth Maps</string>
     <string name="edit_email">Email</string>
     <string name="edit_password">Password</string>
     <string name="button_login">Login</string>
@@ -43,4 +43,7 @@
 	<string name="configuration_problem">Configuration problem</string>
 	<string name="configuration_problem_prompt">UNICEF GIS can\'t take pictures. This is due to some problem with your phone\'s configuration. Please contact a UNICEF GIS admin to help you troubleshoot the issue.</string>
 	<string name="wait">Wait</string>
+	<string name="take_picture">TAKE PICTURE</string>
+	<string name="share_on_facebook">Share on Facebook</string>
+	<string name="share_on_twitter">Share on Twitter</string>
 </resources>

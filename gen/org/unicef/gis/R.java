@@ -182,9 +182,10 @@ containing a value of this type.
         public static final int common_signin_btn_text_pressed_light=0x7f020018;
         public static final int content_picture=0x7f020019;
         public static final int ic_launcher=0x7f02001a;
+        public static final int voy_launcher=0x7f02001b;
     }
     public static final class id {
-        public static final int action_settings=0x7f060026;
+        public static final int action_settings=0x7f060024;
         public static final int choose_tags_bottom_border=0x7f060012;
         public static final int choose_tags_button_bar=0x7f060013;
         public static final int choose_tags_gridview=0x7f060015;
@@ -206,19 +207,17 @@ containing a value of this type.
         public static final int my_reports_new_report=0x7f060010;
         public static final int none=0x7f060000;
         public static final int normal=0x7f060001;
-        public static final int row_report_date_time=0x7f060024;
-        public static final int row_report_description=0x7f060023;
-        public static final int row_report_thumbnail=0x7f060022;
+        public static final int row_report_date_time=0x7f060022;
+        public static final int row_report_description=0x7f060021;
+        public static final int row_report_thumbnail=0x7f060020;
         public static final int satellite=0x7f060002;
-        public static final int spinning_wheel=0x7f060025;
-        public static final int summary_bottom_border=0x7f06001b;
-        public static final int summary_button_bar=0x7f06001c;
-        public static final int summary_cancel=0x7f06001d;
+        public static final int spinning_wheel=0x7f060023;
+        public static final int summary_bottom_border=0x7f06001f;
         public static final int summary_done=0x7f06001e;
-        public static final int summary_location=0x7f06001f;
-        public static final int summary_location_display=0x7f060021;
+        public static final int summary_location=0x7f06001b;
+        public static final int summary_location_display=0x7f06001d;
         public static final int summary_picture=0x7f060017;
-        public static final int summary_progress_bar=0x7f060020;
+        public static final int summary_progress_bar=0x7f06001c;
         public static final int summary_tags=0x7f060019;
         public static final int summary_tags_chosen=0x7f06001a;
         public static final int summary_title=0x7f060018;
@@ -353,8 +352,11 @@ containing a value of this type.
         public static final int save_address=0x7f070026;
         public static final int save_report=0x7f070035;
         public static final int searching_location=0x7f070038;
+        public static final int share_on_facebook=0x7f070041;
+        public static final int share_on_twitter=0x7f070042;
         public static final int something_wrong_fetching_tags=0x7f07002b;
         public static final int tag_your_report=0x7f07002e;
+        public static final int take_picture=0x7f070040;
         public static final int title_activity_configure_server_url=0x7f070022;
         public static final int title_activity_display_message=0x7f07001b;
         public static final int title_activity_fetch_tags=0x7f070023;

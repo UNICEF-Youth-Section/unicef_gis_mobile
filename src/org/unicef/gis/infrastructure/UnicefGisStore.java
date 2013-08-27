@@ -54,6 +54,8 @@ public class UnicefGisStore {
 		values.put(UnicefGisDbContract.Report.COLUMN_NAME_TIMESTAMP, generateTimestamp());
 		
 		db.insert(UnicefGisDbContract.Report.TABLE_NAME, "null", values);
+		
+		db.close();
 	}
 	
 	private String generateTimestamp() {
@@ -91,9 +93,12 @@ public class UnicefGisStore {
 			db.insert(UnicefGisDbContract.Tag.TABLE_NAME, "null", values);
 		}
 
+		db.close();
+		
 		setTagsHaveBeenFetched(true);		
 	}
 	
+	//Do not close the db instance created by this method, since that would invalidate the cursor. 
 	public Cursor getReportsCursor() {
 		UnicefGisDbHelper dbHelper = new UnicefGisDbHelper(context);
 		SQLiteDatabase db = dbHelper.getReadableDatabase();
@@ -125,6 +130,8 @@ public class UnicefGisStore {
 			tags.add(new Tag(c.getString(0)));
 			c.moveToNext();
 		}
+		
+		db.close();
 		
 		return tags;
 	}	

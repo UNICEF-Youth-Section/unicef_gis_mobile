@@ -14,13 +14,13 @@ import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ToggleButton;
 
 public class ToggleTagAdapter extends BaseAdapter implements OnCheckedChangeListener {
-	private final Context context;
+	private IChooseTagsCallbacks callbacks = null;
 	
 	private ArrayList<String> chosenTags;
 	private List<Tag> tags;
 	
-	public ToggleTagAdapter(Context context) {
-		this.context = context;
+	public ToggleTagAdapter(IChooseTagsCallbacks callbacks) {
+		this.callbacks = callbacks;
 		chosenTags = new ArrayList<String>();
 	}
 	
@@ -41,6 +41,8 @@ public class ToggleTagAdapter extends BaseAdapter implements OnCheckedChangeList
 
 	@Override
 	public View getView(int position, View convertView, ViewGroup parent) {
+		Context context = parent.getContext();
+		
 		ToggleButton toggle = new ToggleButton(context);
 		
         if (convertView == null) {  // if it's not recycled, initialize some attributes
@@ -78,6 +80,8 @@ public class ToggleTagAdapter extends BaseAdapter implements OnCheckedChangeList
 		
 		if (!isChecked && chosenTags.contains(button.getText().toString()))
 			chosenTags.remove(button.getText().toString());
+		
+		callbacks.chosenTagsChanged(chosenTags);
 	}
 
 	public ArrayList<String> getChosenTags() {

@@ -14,6 +14,7 @@ import org.unicef.gis.infrastructure.image.Camera;
 import org.unicef.gis.model.Tag;
 import org.unicef.gis.ui.AlertDialogFragment;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -22,6 +23,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.location.Location;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -31,37 +33,22 @@ import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 
-public class CreateReportActivity extends Activity implements ILocationServiceConsumer, IGetTagsCallback {
-	private static final String GET_TAGS_FRAGMENT_TAG = "get_tags_fragment";
-	
+public class CreateReportActivity extends Activity implements ILocationServiceConsumer, IGetTagsCallback, IChooseTagsCallbacks, IReportSummaryCallbacks {
 	private GetTagsTaskFragment getTagsFragment;
 	private ChooseTagsFragment tagsFragment;
-	private ReportSummaryFragment reportSummaryFragment;	
+	private ReportSummaryFragment summaryFragment;	
 	
-	private static final int REQUEST_CODE_RECOVER_PLAY_SERVICES = 11;
-	private static final int SUMMARY_VIEW_THUMBNAIL_FACTOR = 4;
-	
-	private static final String BUNDLE_IMAGE_FILE = "bundle_key_image_file_path";
-	private static final String BUNDLE_CHOSEN_TAGS = "bundle_key_chosen_tags";
-	private static final String BUNDLE_DESCRIPTION = "bundle_key_description";
-	private static final String BUNDLE_CURRENT_STEP = "bundle_key_current_step";
-	
-	private static final String STEP_PIC = "step_pic";
-	private static final String STEP_TAG = "step_tag";
-	private static final String STEP_SUMMARY = "step_summary";
-	
-	private String currentStep = STEP_PIC;
+	private String currentStep = CreateReportActivityConstants.STEP_PIC;
 	
 	private LocationService locationService;
 	
 	private Bitmap imageThumbnail = null;
 	private File imageFile;
-	private Location location = null;	
+	private Location location = null;		
+	private ArrayList<String> chosenTags = null;	
+	private String description = null;
 	
 	private List<Tag> availableTags = null;
-	private ArrayList<String> chosenTags = null;
-	
-	private String description = null;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -73,19 +60,67 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		startLoadingTags();
 		
 		loadFragments();		
-		loadLocationService();				
+		loadLocationService();	
+		
+		setupActionBar();
+	}
+
+	private void setupActionBar() {
+		ActionBar actionBar = getActionBar();
+		actionBar.setDisplayHomeAsUpEnabled(true);
+	}
+	
+	@Override
+	public boolean onNavigateUp() {
+		onBackPressed();
+		return true;
+	}
+	
+	@Override
+	public void onBackPressed() {
+		if (atSummaryStep()){
+			currentStep = CreateReportActivityConstants.STEP_TAG;	
+			refreshTagsFragment();			
+			moveToTagStep(CreateReportActivityConstants.STEP_SUMMARY);			
+		} else if (atTaggingStep()) {
+			currentStep = CreateReportActivityConstants.STEP_PIC;									
+			tryToTakePicture();
+		} else if (atTakePictureStep()) {
+			finish();
+		}				
+	}
+
+	private boolean atTakePictureStep() {
+		return currentStep == null || currentStep.equals(CreateReportActivityConstants.STEP_PIC);
+	}
+
+	private boolean atTaggingStep() {
+		return currentStep.equals(CreateReportActivityConstants.STEP_TAG);
+	}
+
+	private boolean atSummaryStep() {
+		return currentStep.equals(CreateReportActivityConstants.STEP_SUMMARY);
+	}
+
+	private void refreshTagsFragment() {
+		if (tagsFragment == null) return;
+
+		tagsFragment.setAvailableTags(availableTags);
+		tagsFragment.setChosenTags(chosenTags);
 	}
 	
 	private void startLoadingTags() {
 		Log.d("CreateReportActivity", "startLoadingTags");
 		
 		FragmentManager fm = getFragmentManager();
-		getTagsFragment = (GetTagsTaskFragment) fm.findFragmentByTag(GET_TAGS_FRAGMENT_TAG);
+		getTagsFragment = (GetTagsTaskFragment) fm.findFragmentByTag(CreateReportActivityConstants.GET_TAGS_FRAGMENT_TAG);
 
 		if (getTagsFragment == null) {
+			Log.d("CreateReportActivity", "fragment is null, starting tag retrieval");
 			getTagsFragment = new GetTagsTaskFragment();
-			fm.beginTransaction().add(getTagsFragment, GET_TAGS_FRAGMENT_TAG).commit();
+			fm.beginTransaction().add(getTagsFragment, CreateReportActivityConstants.GET_TAGS_FRAGMENT_TAG).commit();
 		} else {
+			Log.d("CreateReportActivity", "fragment exists, updating available tags");
 			availableTags = getTagsFragment.getAvailableTags();
 		}
 	}
@@ -108,92 +143,77 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		Log.d("CreateReportActivity", "onSaveInstanceState");
 		
 		if (imageFile != null)
-			outState.putString(BUNDLE_IMAGE_FILE, imageFile.getAbsolutePath());
+			outState.putString(CreateReportActivityConstants.BUNDLE_IMAGE_FILE, imageFile.getAbsolutePath());
 		
-		String fragmentChosenTags = tagsFragment.getChosenTags() == null ? "null" : tagsFragment.getChosenTags().toString();
-		Log.d("CreateReportActivity", "Fragment chosen tags: " + fragmentChosenTags);
+		outState.putStringArrayList(CreateReportActivityConstants.BUNDLE_CHOSEN_TAGS, getChosenTags());		
+		outState.putString(CreateReportActivityConstants.BUNDLE_DESCRIPTION, description);
 		
-		String chosenTags = getChosenTags() == null ? "null" : getChosenTags().toString();
-		Log.d("CreateReportActivity", "Activity chosen tags: " + chosenTags);
-	
-		if (currentStep.equals(STEP_TAG))
-			outState.putStringArrayList(BUNDLE_CHOSEN_TAGS, tagsFragment.getChosenTags());
-		else
-			outState.putStringArrayList(BUNDLE_CHOSEN_TAGS, getChosenTags());
-		
-		String desc = reportSummaryFragment.getReportDescription() == null ? "null" : reportSummaryFragment.getReportDescription();
-		Log.d("CreateReportActivity", "Fragment chosen desc: " + desc);
-		
-		String descAct = description == null ? "null" : description;
-		Log.d("CreateReportActivity", "Activity chosen desc: " + descAct);
-		
-		if (currentStep.equals(STEP_SUMMARY)){
-			Log.d("CreateReportActivity", "Storing fragment desc");
-			outState.putString(BUNDLE_DESCRIPTION, reportSummaryFragment.getReportDescription());
-		}
-		else {
-			Log.d("CreateReportActivity", "Storing activity desc");
-			outState.putString(BUNDLE_DESCRIPTION, description);
-		}	
-		
-		outState.putString(BUNDLE_CURRENT_STEP, currentStep);
+		outState.putString(CreateReportActivityConstants.BUNDLE_CURRENT_STEP, currentStep);
 		
 		super.onSaveInstanceState(outState);		
 	}
 	
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		Log.d("CreateReportActivity", "onRestoreInstanceState");
-		
+		Log.d("CreateReportActivity", "onRestoreInstanceState");		
 		super.onRestoreInstanceState(savedInstanceState);
 		
-		String savedImageFilePath = savedInstanceState.getString(BUNDLE_IMAGE_FILE);
+		String savedImageFilePath = savedInstanceState.getString(CreateReportActivityConstants.BUNDLE_IMAGE_FILE);
 		if (savedImageFilePath != null) 
 			imageFile = new File(savedImageFilePath);
 		
-		setChosenTags(savedInstanceState.getStringArrayList(BUNDLE_CHOSEN_TAGS));		
-		tagsFragment.setChosenTags(getChosenTags());
+		setChosenTags(savedInstanceState.getStringArrayList(CreateReportActivityConstants.BUNDLE_CHOSEN_TAGS));		
 		
-		description = savedInstanceState.getString(BUNDLE_DESCRIPTION);
-		reportSummaryFragment.setReportDescription(description);
+		if (availableTags == null)
+			availableTags = getTagsFragment.getAvailableTags();
 		
-		String restoredStep = savedInstanceState.getString(BUNDLE_CURRENT_STEP);
-		currentStep = restoredStep;
-	
-		if (currentStep == null) {
-			currentStep = STEP_PIC;
-		}
+		description = savedInstanceState.getString(CreateReportActivityConstants.BUNDLE_DESCRIPTION);
+		currentStep = savedInstanceState.getString(CreateReportActivityConstants.BUNDLE_CURRENT_STEP);
+		
+		refreshTagsFragment();
+		refreshSummaryFragment();
+		
+		if (currentStep == null)
+			currentStep = CreateReportActivityConstants.STEP_PIC;
+	}
 
-		Log.d("CreateReportActivity", "Current step:" + (currentStep == null ? "null" : currentStep));
+	private void refreshSummaryFragment() {
+		if (summaryFragment == null) return;
+		
+		summaryFragment.setReportDescription(description);
 	}
 	
 	@Override
 	protected void onStart() {
-		Log.d("CreateReportActivity", "onStart");
 		super.onStart();
 		locationService.start();
 	}
 	
 	@Override
 	protected void onStop() {
-		Log.d("CreateReportActivity", "onStop");
 		locationService.stop();		
 		super.onStop();
 	}
 	
+	private void nullableLog(String key, Object nullable) {
+		Log.d("CreateReportActivity", key + (nullable == null ? "null" : nullable.toString()));
+	}
+	
 	@Override
 	protected void onResume() {
-		Log.d("CreateReportActivity", "onResume");
-		Log.d("Current step:", currentStep == null ? "null" : currentStep);
-		
+		nullableLog("onResume: ", "executing");
+
 		servicesConnected();
 		
-		if (currentStep == null || currentStep.equals(STEP_PIC))
+		if (atTakePictureStep()) {
 			tryToTakePicture();
-		else if (currentStep.equals(STEP_TAG))
-			moveToTagStep(null);
-		else if (currentStep.equals(STEP_SUMMARY))
-			moveToSummaryStep(null);
+		} else if (atTaggingStep()) {
+			refreshTagsFragment();
+			moveToTagStep(CreateReportActivityConstants.STEP_TAG);
+		} else if (atSummaryStep()) {
+			refreshSummaryFragment();
+			moveToSummaryStep(CreateReportActivityConstants.STEP_SUMMARY);
+		}	
 		
 		super.onResume();
 	}
@@ -205,15 +225,19 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 
 	private void loadFragments() {
 		Log.d("CreateReportActivity", "loadFragments");
-		tagsFragment = new ChooseTagsFragment();
 		
-		if (availableTags != null) 
-			tagsFragment.setAvailableTags(availableTags);
+		FragmentManager fm = getFragmentManager();
 		
-		reportSummaryFragment = new ReportSummaryFragment();
+		tagsFragment = (ChooseTagsFragment) fm.findFragmentByTag(CreateReportActivityConstants.CHOOSE_TAGS_FRAGMENT_TAG);
+		if (tagsFragment == null)
+			tagsFragment = new ChooseTagsFragment();		
+		
+		summaryFragment = (ReportSummaryFragment) fm.findFragmentByTag(CreateReportActivityConstants.SUMMARY_FRAGMENT_TAG);
+		if (summaryFragment == null)
+			summaryFragment = new ReportSummaryFragment();				
 	}	
 	
-	private boolean servicesConnected() {
+	private void servicesConnected() {
 		Log.d("CreateReportActivity", "servicesConnected");
 		// Check that Google Play services is available        
         int status = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
@@ -224,38 +248,30 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
           } else {
             Toast.makeText(this, "This device is not supported.", Toast.LENGTH_LONG).show();
             finish();
-          }
-          
-          return false;
+          }                   
         }
-        
-        return true;
     }	
 	
 	private void showErrorDialog(int code) {
 	  Log.d("CreateReportActivity", "showErrorDialog");
-	  GooglePlayServicesUtil.getErrorDialog(code, this, REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
+	  GooglePlayServicesUtil.getErrorDialog(code, this, CreateReportActivityConstants.REQUEST_CODE_RECOVER_PLAY_SERVICES).show();
 	}
 	
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		Log.d("CreateReportActivity", "onActivityResult");
-		if (requestCode == REQUEST_CODE_RECOVER_PLAY_SERVICES){
+		if (requestCode == CreateReportActivityConstants.REQUEST_CODE_RECOVER_PLAY_SERVICES){
 			handleConnectionFailureResolutionRequest(resultCode, data);
 			return;
 		}
 					
-		if (resultCode == RESULT_CANCELED)
+		if (resultCode == RESULT_CANCELED || requestCode != Camera.TAKE_PICTURE_INTENT || resultCode != RESULT_OK)
 			startActivity(new Intent(this, MyReportsActivity.class));
-		
-		if (requestCode != Camera.TAKE_PICTURE_INTENT && resultCode != RESULT_OK) 
-			return;		
 		
 		Camera camera = new Camera(this);
 		camera.addPicToGallery(imageFile);
 		
-		currentStep = STEP_TAG;
-		Log.d("Current step:", currentStep == null ? "null" : currentStep);
+		currentStep = CreateReportActivityConstants.STEP_TAG;
 	}
 	
 	private void handleConnectionFailureResolutionRequest(int resultCode, Intent data) {
@@ -267,44 +283,47 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		return;		
 	}
 
-	private void moveToAnotherStep(Fragment current, Fragment newFragment, String step) {
-		Log.d("CreateReportActivity", "moveToAnotherStep");
-		currentStep = step;
+	private void moveToAnotherStep(String fragmentTag, String newStep, String previousStep) {
+		currentStep = newStep;
 		
-		FragmentTransaction tx = getFragmentManager().beginTransaction();
+		FragmentManager fm = getFragmentManager();
+		FragmentTransaction tx = fm.beginTransaction();		
+		Fragment fragment = fm.findFragmentByTag(fragmentTag);		
 		
-		if (current == null) {
-			tx.add(R.id.fragment_container, newFragment);
-		} else {
-			tx.replace(R.id.fragment_container, newFragment);
-			tx.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
-			tx.addToBackStack(null);
+		if (fragment == null) {
+			if (atTaggingStep()){
+				tx.add(R.id.fragment_container, tagsFragment, CreateReportActivityConstants.CHOOSE_TAGS_FRAGMENT_TAG);
+			} else if (atSummaryStep()) {
+				tx.add(R.id.fragment_container, summaryFragment, CreateReportActivityConstants.SUMMARY_FRAGMENT_TAG);
+			}				
+		} else if (!(previousStep.equals(currentStep))) {
+			tx.replace(R.id.fragment_container, fragment);
 		}	
 		
 		tx.commit();
 	}
 	
-	private void moveToTagStep(Fragment current) {
+	private void moveToTagStep(String previousStep) {
 		Log.d("CreateReportActivity", "moveToTagStep");
-		moveToAnotherStep(current, tagsFragment, STEP_TAG);
+		moveToAnotherStep(CreateReportActivityConstants.CHOOSE_TAGS_FRAGMENT_TAG, CreateReportActivityConstants.STEP_TAG, previousStep);
 	}
 	
-	private void moveToSummaryStep(ChooseTagsFragment current) {
+	private void moveToSummaryStep(String previousStep) {
 		Log.d("CreateReportActivity", "moveToSummaryStep");
-		moveToAnotherStep(current, reportSummaryFragment, STEP_SUMMARY);
+		refreshSummaryFragment();
+		moveToAnotherStep(CreateReportActivityConstants.SUMMARY_FRAGMENT_TAG, CreateReportActivityConstants.STEP_SUMMARY, previousStep);
 	}
 
 	public void onTagsChosen(View view) {
 		Log.d("CreateReportActivity", "onTagsChosen");
-		setChosenTags(tagsFragment.getChosenTags());
-		moveToSummaryStep(tagsFragment);			
+		moveToSummaryStep(currentStep);			
 	}
 
 	public Bitmap getTakenPictureThumbnail(ImageView imageView) {
 		Log.d("CreateReportActivity", "getTakenPictureThumbnail");
 		if (imageThumbnail == null){
 			Camera camera = new Camera(this);
-			imageThumbnail = camera.getThumbnail(imageFile, SUMMARY_VIEW_THUMBNAIL_FACTOR);
+			imageThumbnail = camera.getThumbnail(imageFile, CreateReportActivityConstants.SUMMARY_VIEW_THUMBNAIL_FACTOR);
 		}
 		
 		return imageThumbnail;
@@ -324,7 +343,7 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
                 // Start an Activity that tries to resolve the error
                 result.startResolutionForResult(
                         this,
-                        REQUEST_CODE_RECOVER_PLAY_SERVICES);
+                        CreateReportActivityConstants.REQUEST_CODE_RECOVER_PLAY_SERVICES);
                 /*
                  * Thrown if Google Play services canceled the original
                  * PendingIntent
@@ -358,7 +377,7 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 	public void onLocationChanged(Location location) {
 		Log.d("CreateReportActivity", "onLocationChanged");
 		this.location = location;
-		reportSummaryFragment.setLocation(this.location);
+		summaryFragment.setLocation(this.location);
 	}
 	
 	public void onSaveReport(View view) {
@@ -370,42 +389,34 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		finish();
 	}
 
-	private void saveReport() {
-		Log.d("CreateReportActivity", "saveReport");
-		String description = reportSummaryFragment.getReportDescription();
-		List<String> tags = getChosenTags();
-		
+	private void saveReport() {		
 		Camera camera = new Camera(this);		
-		UnicefGisStore store = new UnicefGisStore(this);
+		Uri imageUri = camera.getUri(imageFile);
 		
-		store.saveReport(description, location, camera.getUri(imageFile), tags);		
+		UnicefGisStore store = new UnicefGisStore(this);		
+		store.saveReport(description, location, imageUri, chosenTags);		
 	}
 
 	private boolean validate() {
-		Log.d("CreateReportActivity", "validate");
 		if (location == null) {
 			showLocationMissingDialog();
 			return false;
-		} else if (reportSummaryFragment.getReportDescription().isEmpty()) {
+		} else if (description == null || description.isEmpty()) {
 			showDescriptionMissingDialog();
 			return false;
-		}
-			
+		}			
 		return true;
 	}
 
 	private void showDescriptionMissingDialog() {
-		Log.d("CreateReportActivity", "showDescriptionMissingDialog");
 		showAlertDialog(R.string.description_missing, R.string.description_missing_prompt, "description_missing");
 	}
 
 	private void showLocationMissingDialog() {
-		Log.d("CreateReportActivity", "showLocationMissingDialog");
 		showAlertDialog(R.string.location_missing, R.string.location_missing_prompt, "location_missing");
 	}
 	
 	private void showAlertDialog(int title, int prompt, String tag) {
-		Log.d("CreateReportActivity", "showAlertDialog");
 		AlertDialogFragment dialog = new AlertDialogFragment();
 		dialog.setTitle(title);
 		dialog.setPrompt(prompt);
@@ -413,24 +424,35 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 	}
 
 	public ArrayList<String> getChosenTags() {
-		Log.d("CreateReportActivity", "getChosenTags");
 		return chosenTags;
 	}
 
 	@Override
 	public void onGetTagsResult(List<Tag> result) {
-		Log.d("CreateReportActivity", "onGetTagsResult");
 		availableTags = result;
-		tagsFragment.setAvailableTags(result);
-		tagsFragment.setChosenTags(getChosenTags());
+		refreshTagsFragment();
 	}
 
 	private void setChosenTags(ArrayList<String> chosenTags) {
 		Log.d("CreateReportActivity", "setChosenTags");
-		
-		String chosenTagsDesc = chosenTags == null ? "null" : chosenTags.toString();		
-		Log.d("CreateReportActivity", "chosenTags: " + chosenTags == null ? "null" : chosenTagsDesc);
-		
 		this.chosenTags = chosenTags;
+	}
+
+	public List<Tag> getAvailableTags() {
+		return availableTags;
+	}
+
+	@Override
+	public void chosenTagsChanged(ArrayList<String> chosenTags) {
+		this.chosenTags = chosenTags;
+	}
+
+	@Override
+	public void descriptionChanged(String description) {
+		this.description = description;
+	}
+
+	public CharSequence getReportDescription() {
+		return description;
 	}
 }
