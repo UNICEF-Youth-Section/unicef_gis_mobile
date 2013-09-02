@@ -9,7 +9,7 @@ import org.unicef.gis.MyReportsActivity;
 import org.unicef.gis.R;
 import org.unicef.gis.infrastructure.ILocationServiceConsumer;
 import org.unicef.gis.infrastructure.LocationService;
-import org.unicef.gis.infrastructure.UnicefGisStore;
+import org.unicef.gis.infrastructure.data.UnicefGisStore;
 import org.unicef.gis.infrastructure.image.Camera;
 import org.unicef.gis.model.Tag;
 import org.unicef.gis.ui.AlertDialogFragment;

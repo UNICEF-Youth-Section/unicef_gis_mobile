@@ -1,6 +1,5 @@
 package org.unicef.gis.infrastructure.data;
 
-import org.unicef.gis.infrastructure.UnicefGisStore;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;

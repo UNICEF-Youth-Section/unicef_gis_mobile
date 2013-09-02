@@ -2,7 +2,7 @@ package org.unicef.gis.ui.report;
 
 import java.util.List;
 
-import org.unicef.gis.infrastructure.UnicefGisStore;
+import org.unicef.gis.infrastructure.data.UnicefGisStore;
 import org.unicef.gis.model.Tag;
 
 import android.content.Context;

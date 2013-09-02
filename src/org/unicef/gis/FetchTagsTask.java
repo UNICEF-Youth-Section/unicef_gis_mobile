@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.unicef.gis.infrastructure.ServerUrlPreferenceNotSetException;
 import org.unicef.gis.infrastructure.UnicefGisApi;
-import org.unicef.gis.infrastructure.UnicefGisStore;
+import org.unicef.gis.infrastructure.data.UnicefGisStore;
 import org.unicef.gis.model.Tag;
 
 import android.os.AsyncTask;

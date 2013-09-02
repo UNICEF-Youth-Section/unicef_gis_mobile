@@ -1,19 +1,20 @@
 package org.unicef.gis;
 
+import java.util.List;
+
 import org.unicef.gis.infrastructure.RoutesResolver;
 import org.unicef.gis.infrastructure.ServerUrlPreferenceNotSetException;
-import org.unicef.gis.infrastructure.UnicefGisStore;
-import org.unicef.gis.infrastructure.data.UnicefGisDbContract;
+import org.unicef.gis.infrastructure.data.UnicefGisStore;
+import org.unicef.gis.model.Report;
+import org.unicef.gis.model.couchdb.ReportLoader;
 import org.unicef.gis.ui.report.CreateReportActivity;
 import org.unicef.gis.ui.report.ReportRowAdapter;
 
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,7 +23,14 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-public class MyReportsActivity extends ListActivity implements LoaderCallbacks<Cursor> {	
+import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
+
+public class MyReportsActivity extends ListActivity implements LoaderCallbacks<List<Report>> {	
+	//TouchDB initialization code
+	{
+        TDURLStreamHandlerFactory.registerSelfIgnoreError();
+    }
+	
 	private static final int LOADER_ID = 111; 
 	
 	private TextView emptyView;
@@ -82,10 +90,7 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<C
 	}
 	
 	private void setupAdapter() {
-		String[] fromColumns = { UnicefGisDbContract.Report.COLUMN_NAME_IMAGE, UnicefGisDbContract.Report.COLUMN_NAME_TITLE };
-		int[] toViews = { R.id.row_report_thumbnail, R.id.row_report_description };
-		
-		dbAdapter = new ReportRowAdapter(this, R.layout.row_report, null, fromColumns, toViews, 0);
+		dbAdapter = new ReportRowAdapter(this, R.layout.row_report);
 		setListAdapter(dbAdapter);				
 	}
 
@@ -128,23 +133,21 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<C
 	}
 
 	@Override
-	public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-        return new CursorLoader(this, 
-        		UnicefGisDbContract.Report.CONTENT_URI,
-                UnicefGisDbContract.Report.DEFAULT_PROJECTION, 
-                UnicefGisDbContract.Selections.ALL, null, null);
+	public Loader<List<Report>> onCreateLoader(int id, Bundle args) {
+        return new ReportLoader(getApplicationContext());
 	}
 
 	@Override
-	public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
-		dbAdapter.swapCursor(data);
+	public void onLoaderReset(Loader<List<Report>> loader) {
+		dbAdapter.clear();
+	}
+
+	@Override
+	public void onLoadFinished(Loader<List<Report>> loader, List<Report> reports) {
+		dbAdapter.clear();
+		dbAdapter.addAll(reports);
 		
 		ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
         root.removeView(progressBar);
-	}
-
-	@Override
-	public void onLoaderReset(Loader<Cursor> arg0) {
-		dbAdapter.swapCursor(null);		
 	}
 }

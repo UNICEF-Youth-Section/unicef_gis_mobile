@@ -1,15 +1,10 @@
-package org.unicef.gis.infrastructure;
+package org.unicef.gis.infrastructure.data;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.TimeZone;
-import java.util.UUID;
 
-import org.unicef.gis.infrastructure.data.UnicefGisDbContract;
-import org.unicef.gis.infrastructure.data.UnicefGisDbHelper;
+import org.unicef.gis.infrastructure.RoutesResolver;
+import org.unicef.gis.model.Report;
 import org.unicef.gis.model.Tag;
 
 import android.content.ContentValues;
@@ -28,7 +23,7 @@ public class UnicefGisStore {
 	private final Context context;
 	
 	public UnicefGisStore(Context context) {
-		this.context = context;
+		this.context = context;		
 	}
 
 	public void saveAddress(String address) {
@@ -41,42 +36,22 @@ public class UnicefGisStore {
 	
 	public void saveReport(String description, Location location, Uri imageUri,
 			List<String> tags) {
-		UnicefGisDbHelper dbHelper = new UnicefGisDbHelper(context);
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
 		
-		ContentValues values = new ContentValues();
-		values.put(UnicefGisDbContract.Report.COLUMN_NAME_GUID, generateGuid());
-		values.put(UnicefGisDbContract.Report.COLUMN_NAME_TITLE, description);
-		values.put(UnicefGisDbContract.Report.COLUMN_NAME_LAT, location.getLatitude());
-		values.put(UnicefGisDbContract.Report.COLUMN_NAME_LONG, location.getLongitude());
-		values.put(UnicefGisDbContract.Report.COLUMN_NAME_IMAGE, imageUri.toString());
-		values.put(UnicefGisDbContract.Report.COLUMN_NAME_TAGS, asCommaSeparated(tags));
-		values.put(UnicefGisDbContract.Report.COLUMN_NAME_TIMESTAMP, generateTimestamp());
-		
-		db.insert(UnicefGisDbContract.Report.TABLE_NAME, "null", values);
-		
-		db.close();
+		//IUnicefGisStoreAdapter adapter = new SqlLiteStoreAdapter();
+		IUnicefGisStoreAdapter adapter = new TouchDbStoreAdapter(context);
+		adapter.saveReport(context, description, location, imageUri, tags);			
 	}
 	
-	private String generateTimestamp() {
-		SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'", Locale.US);
-		dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-		return dateFormat.format(new Date());		
+	//Do not close the db instance created by this method, since that would invalidate the cursor. 
+	public Cursor getReportsCursor() {
+		//IUnicefGisStoreAdapter adapter = new SqlLiteStoreAdapter();
+		IUnicefGisStoreAdapter adapter = new TouchDbStoreAdapter(context);
+		return adapter.getReportsCursor(context);		
 	}
-
-	private String asCommaSeparated(List<String> tags) {
-		StringBuffer sb = new StringBuffer("");
-		for (String string : tags) {
-			if (sb.length() != 0) 
-				sb.append(",");
-			
-			sb.append(string);
-		}
-		return sb.toString();
-	}
-
-	private String generateGuid() {
-		return UUID.randomUUID().toString();
+	
+	public List<Report> getReports() {
+		IUnicefGisStoreAdapter adapter = new TouchDbStoreAdapter(context);
+		return adapter.getReports();
 	}
 
 	public void saveTags(List<Tag> tags) {
@@ -96,19 +71,6 @@ public class UnicefGisStore {
 		db.close();
 		
 		setTagsHaveBeenFetched(true);		
-	}
-	
-	//Do not close the db instance created by this method, since that would invalidate the cursor. 
-	public Cursor getReportsCursor() {
-		UnicefGisDbHelper dbHelper = new UnicefGisDbHelper(context);
-		SQLiteDatabase db = dbHelper.getReadableDatabase();
-		
-		String[] projection = UnicefGisDbContract.Report.DEFAULT_PROJECTION;
-		String sortOrder = UnicefGisDbContract.Report.COLUMN_NAME_TIMESTAMP + " DESC";
-		String selection = "1=1";
-		String[] selectionArgs = new String[0];
-		
-		return db.query(UnicefGisDbContract.Report.TABLE_NAME, projection, selection, selectionArgs, null, null, sortOrder);
 	}
 	
 	public List<Tag> retrieveTags() {
