@@ -55,7 +55,7 @@ public class Camera {
 	}
 	
 	//Expects a uri of the form file://FILE_PATH
-	private File fileFromUri(Uri uri) {
+	public static File fileFromUri(Uri uri) {
 		return new File(uri.toString().substring(8));
 	}
 	

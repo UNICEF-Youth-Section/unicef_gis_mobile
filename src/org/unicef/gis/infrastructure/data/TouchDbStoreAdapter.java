@@ -1,15 +1,27 @@
 package org.unicef.gis.infrastructure.data;
 
+import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 
+import org.ektorp.AttachmentInputStream;
 import org.ektorp.CouchDbConnector;
+import org.ektorp.ReplicationCommand;
 import org.ektorp.impl.StdCouchDbInstance;
+import org.unicef.gis.infrastructure.image.Camera;
 import org.unicef.gis.model.Report;
 import org.unicef.gis.model.couchdb.NullReduce;
+import org.unicef.gis.services.ReportAttachmentsService;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
@@ -17,6 +29,7 @@ import android.util.Log;
 
 import com.couchbase.touchdb.TDDatabase;
 import com.couchbase.touchdb.TDQueryOptions;
+import com.couchbase.touchdb.TDRevision;
 import com.couchbase.touchdb.TDServer;
 import com.couchbase.touchdb.TDStatus;
 import com.couchbase.touchdb.TDView;
@@ -54,8 +67,14 @@ public class TouchDbStoreAdapter implements IUnicefGisStoreAdapter {
 
 	@Override
 	public void saveReport(Context context, String description,
-			Location location, Uri imageUri, List<String> tags) {		
-		connector().create(new Report(description, location, imageUri, tags));		
+			Location location, Uri imageUri, List<String> tags) {
+		Report report = new Report(description, location, imageUri, tags);
+		ektorp().create(report);		
+			
+		Intent addAttachmentIntent = new Intent(context, ReportAttachmentsService.class);
+		addAttachmentIntent.putExtra(ReportAttachmentsService.REPORT_ID, report.getId());
+		addAttachmentIntent.putExtra(ReportAttachmentsService.IMAGE_URI, imageUri.toString());
+		context.startService(addAttachmentIntent);		
 	}
 
 	@Override
@@ -74,8 +93,56 @@ public class TouchDbStoreAdapter implements IUnicefGisStoreAdapter {
 					
 		return Report.collectionFromMap(reportsView.queryWithOptions(options, status));
 	}
+	
+	public Report getReport(String reportId) {		
+		TDRevision revision = db.getDocumentWithIDAndRev(reportId, null, EnumSet.noneOf(TDDatabase.TDContentOptions.class));		
+		return Report.fromMap(revision.getBody().getProperties());
+	}
+	
+	public void addAttachment(String reportId, String imageUri) {	
+		Report report = getReport(reportId);
+		
+		File pic = Camera.fileFromUri(Uri.parse(imageUri));
+		
+		InputStream is = null;
+		ByteArrayOutputStream bos = null;
+		try {
+			is = new BufferedInputStream(new FileInputStream(pic));
+			bos = new ByteArrayOutputStream();
+			
+			while (is.available() > 0) {
+				bos.write(is.read());
+			}
+		} catch (Exception e) {
+			Log.e("TouchDbStoreAdapter", "Report picture not found, saving report without an image.");
+			return;
+		} finally {
+			if (is != null)
+			try {
+				is.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+				
+		byte[] attach = bos.toByteArray(); 
+		AttachmentInputStream ais = new AttachmentInputStream(pic.getName(), new ByteArrayInputStream(attach), "image/jpeg");		
+		ektorp().createAttachment(report.getId(), report.getRevision(), ais);
+		
+		replicate();
+	}
+	
+	private void replicate() {
+		ReplicationCommand cmd = new ReplicationCommand.Builder()
+			.source(TOUCH_DB_NAME)
+			.target("http://192.168.0.153:5984/unicef_gis")
+			.continuous(true)
+			.build();
 
-	private CouchDbConnector connector() {
+		couchDb.replicate(cmd);	
+	}	
+
+	private CouchDbConnector ektorp() {
 		CouchDbConnector conn = couchDb.createConnector(TOUCH_DB_NAME, true);
 		return conn;
 	}

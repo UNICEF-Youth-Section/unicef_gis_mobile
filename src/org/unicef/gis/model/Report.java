@@ -10,6 +10,8 @@ import java.util.TimeZone;
 
 import org.ektorp.support.OpenCouchDbDocument;
 
+import com.couchbase.touchdb.TDRevision;
+
 import android.location.Location;
 import android.net.Uri;
 
@@ -113,21 +115,20 @@ public class Report extends OpenCouchDbDocument {
         return false;
     }
 
+	@SuppressWarnings("unchecked")
 	public static List<Report> collectionFromMap(
 			List<Map<String, Object>> plainReports) {
 		List<Report> reports = new ArrayList<Report>();
 
 		for (Map<String, Object> plainReport : plainReports) {
-			reports.add(fromMap(plainReport));
+			reports.add(fromMap((Map<String, Object>) plainReport.get("value")));
 		}
 		
 		return reports;
 	}
 
 	@SuppressWarnings("unchecked")
-	private static Report fromMap(Map<String, Object> plainReport) {
-		Map<String, Object> objReport = (Map<String, Object>) plainReport.get("value");
-		
+	public static Report fromMap(Map<String, Object> objReport) {		
 		String plainTitle = (String)objReport.get(TITLE_KEY);
 		Double plainLatitude = (Double) objReport.get(LATITUDE_KEY); 
 		Double plainLongitude = (Double) objReport.get(LONGITUDE_KEY);
@@ -141,5 +142,10 @@ public class Report extends OpenCouchDbDocument {
 		report.setTimestamp(timestamp);
 
 		return report;
+	}
+
+	public static Report fromRevision(TDRevision documentWithIDAndRev) {
+		
+		return null;
 	}
 }
