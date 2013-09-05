@@ -353,6 +353,7 @@ containing a value of this type.
         public static final int retry=0x7f05002b;
         public static final int save_address=0x7f050027;
         public static final int save_report=0x7f050036;
+        public static final int saving_report=0x7f050044;
         public static final int searching_location=0x7f050039;
         public static final int share_on_facebook=0x7f050042;
         public static final int share_on_twitter=0x7f050043;

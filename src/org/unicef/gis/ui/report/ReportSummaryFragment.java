@@ -15,6 +15,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -28,6 +29,7 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	private ProgressBar progressBar;
 	private TextView reportDescription;
 	private TextView tagsView;
+	private Button saveReport;
 	
 	@Override
 	public void onAttach(Activity activity) {
@@ -65,13 +67,7 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	}
 	
 	@Override
-	public void onResume() {
-		/*
-		if (reportDescription.requestFocus()) {
-	        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-	        imm.showSoftInput(reportDescription, InputMethodManager.SHOW_IMPLICIT);
-	    }*/
-		
+	public void onResume() {		
 		Log.d("ReportSummaryFragment", "onResume");
 		Log.d("ReportSummaryFragment", String.valueOf(System.identityHashCode(this)));
 		
@@ -128,6 +124,8 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 		reportDescription.addTextChangedListener(this);
 				
 		tagsView = (TextView) view.findViewById(R.id.summary_tags_chosen);
+		
+		saveReport = (Button) view.findViewById(R.id.summary_done);
 	}
 
 	private void setupImage() {
@@ -180,4 +178,9 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
 	@Override
 	public void onTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {}
+
+	public void onSavingReport() {
+		saveReport.setText(R.string.saving_report);
+		saveReport.setEnabled(false);
+	}
 }

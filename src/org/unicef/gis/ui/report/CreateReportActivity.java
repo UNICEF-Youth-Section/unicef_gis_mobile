@@ -389,7 +389,11 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		finish();
 	}
 
-	private void saveReport() {		
+	private void saveReport() {
+		if (summaryFragment != null) {
+			summaryFragment.onSavingReport();
+		}
+		
 		Camera camera = new Camera(this);		
 		Uri imageUri = camera.getUri(imageFile);
 		

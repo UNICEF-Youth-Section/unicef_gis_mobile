@@ -7,7 +7,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -95,8 +97,13 @@ public class TouchDbStoreAdapter implements IUnicefGisStoreAdapter {
 	}
 	
 	public Report getReport(String reportId) {		
-		TDRevision revision = db.getDocumentWithIDAndRev(reportId, null, EnumSet.noneOf(TDDatabase.TDContentOptions.class));		
+		TDRevision revision = getCurrentReportRevision(reportId);		
 		return Report.fromMap(revision.getBody().getProperties());
+	}
+
+	private TDRevision getCurrentReportRevision(String reportId) {
+		TDRevision revision = db.getDocumentWithIDAndRev(reportId, null, EnumSet.noneOf(TDDatabase.TDContentOptions.class));
+		return revision;
 	}
 	
 	public void addAttachment(String reportId, String imageUri) {	
@@ -128,15 +135,43 @@ public class TouchDbStoreAdapter implements IUnicefGisStoreAdapter {
 		byte[] attach = bos.toByteArray(); 
 		AttachmentInputStream ais = new AttachmentInputStream(pic.getName(), new ByteArrayInputStream(attach), "image/jpeg");		
 		ektorp().createAttachment(report.getId(), report.getRevision(), ais);
+				
+		replicateWithAttach(report.getId());
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean reportHasAttachment(String docId) {
+		TDRevision revision = getCurrentReportRevision(docId);
 		
-		replicate();
+		HashMap<String, Object> attachs = (HashMap<String, Object>)revision.getProperties().get("_attachments");
+		
+		if (attachs == null) return false;
+		
+		return attachs.size() > 0;	
 	}
 	
-	private void replicate() {
+	private void replicateWithAttach(String docId) {
+		ArrayList<String> docIdFilter = new ArrayList<String>();
+		docIdFilter.add(docId);
+		
+		int backoff = 100;
+		
+		while (!reportHasAttachment(docId)) {
+			try {
+				Thread.sleep(backoff);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			
+			backoff = backoff * 2;
+			continue;
+		}
+						
 		ReplicationCommand cmd = new ReplicationCommand.Builder()
 			.source(TOUCH_DB_NAME)
-			.target("http://192.168.0.153:5984/unicef_gis")
-			.continuous(true)
+			.target("http://192.168.0.120:5984/unicef_gis")
+			.continuous(false)
+			.docIds(docIdFilter)
 			.build();
 
 		couchDb.replicate(cmd);	
