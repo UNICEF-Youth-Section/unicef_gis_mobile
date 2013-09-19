@@ -38,19 +38,19 @@ public class UnicefGisStore {
 			List<String> tags) {
 		
 		//IUnicefGisStoreAdapter adapter = new SqlLiteStoreAdapter();
-		IUnicefGisStoreAdapter adapter = new TouchDbStoreAdapter(context);
+		IUnicefGisStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
 		adapter.saveReport(context, description, location, imageUri, tags);			
 	}
 	
 	//Do not close the db instance created by this method, since that would invalidate the cursor. 
 	public Cursor getReportsCursor() {
 		//IUnicefGisStoreAdapter adapter = new SqlLiteStoreAdapter();
-		IUnicefGisStoreAdapter adapter = new TouchDbStoreAdapter(context);
+		IUnicefGisStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
 		return adapter.getReportsCursor(context);		
 	}
 	
 	public List<Report> getReports() {
-		IUnicefGisStoreAdapter adapter = new TouchDbStoreAdapter(context);
+		IUnicefGisStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
 		return adapter.getReports();
 	}
 

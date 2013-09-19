@@ -10,20 +10,26 @@ import java.util.TimeZone;
 
 import org.ektorp.support.OpenCouchDbDocument;
 
-import com.couchbase.touchdb.TDRevision;
+import com.couchbase.cblite.CBLRevision;
 
 import android.location.Location;
 import android.net.Uri;
 
 public class Report extends OpenCouchDbDocument {	
+	public static final String TYPE = "report";
+	
 	public static final String TIMESTAMP_KEY = "timestamp";
 	public static final String ID_KEY = "_id";
-	private static final Object TITLE_KEY = "title";
-	private static final Object LATITUDE_KEY = "latitude";
-	private static final Object LONGITUDE_KEY = "longitude";
-	private static final Object IMAGE_URI_KEY = "imageUri";
-	private static final Object TAGS_KEY = "tags";
-	private static final Object REVISION_KEY = "_rev";
+	public static final String TITLE_KEY = "title";
+	public static final String LATITUDE_KEY = "latitude";
+	public static final String LONGITUDE_KEY = "longitude";
+	public static final String IMAGE_URI_KEY = "imageUri";
+	public static final String TAGS_KEY = "tags";
+	public static final String REVISION_KEY = "_rev";
+	public static final String SYNCED_DATA_KEY = "syncedData";
+	public static final String SYNCED_IMAGE_KEY = "syncedImage";
+	public static final String TYPE_KEY = "type";
+	public static final String ATTEMPTS_KEY = "attempts";
 	
 	private static final long serialVersionUID = 1L;
 		
@@ -33,12 +39,18 @@ public class Report extends OpenCouchDbDocument {
 	private List<String> tags;
 	private String imageUri;
 	private String timestamp;
+	private Boolean syncedData;
+	private Boolean syncedImage;
+	private String type;
+	private Integer attempts;
 	
 	public Report(String title, Location location, Uri imageUri, List<String> tags) {		
 		this(title, location.getLatitude(), location.getLongitude(), imageUri.toString(), tags);
 	}
 	
 	public Report(String title, Double latitude, Double longitude, String imageUri, List<String> tags) {
+		type = TYPE;
+		
 		this.title = title;
 		
 		this.latitude = latitude;
@@ -47,7 +59,11 @@ public class Report extends OpenCouchDbDocument {
 		this.tags = tags;
 		this.imageUri = imageUri.toString();
 		
-		this.timestamp = generateTimestamp();		
+		this.timestamp = generateTimestamp();
+		
+		setSyncedData(false);
+		setSyncedImage(false);
+		setAttempts(0);
 	}
 
 	public String getTitle() {
@@ -135,17 +151,54 @@ public class Report extends OpenCouchDbDocument {
 		String imageUri = (String) objReport.get(IMAGE_URI_KEY); 
 		List<String> tags = (List<String>) objReport.get(TAGS_KEY);
 		String timestamp = (String) objReport.get(TIMESTAMP_KEY);
+		Boolean syncedData = (Boolean) objReport.get(SYNCED_DATA_KEY);
+		Boolean syncedImage = (Boolean) objReport.get(SYNCED_IMAGE_KEY);
+		Integer attempts = (Integer) objReport.get(ATTEMPTS_KEY);
 		
 		Report report = new Report(plainTitle, plainLatitude, plainLongitude, imageUri, tags);		
 		report.setId((String) objReport.get(ID_KEY));
 		report.setRevision((String) objReport.get(REVISION_KEY));
 		report.setTimestamp(timestamp);
-
+		report.setSyncedData(syncedData);
+		report.setSyncedImage(syncedImage);
+		report.setAttempts(attempts);
+		
 		return report;
 	}
 
-	public static Report fromRevision(TDRevision documentWithIDAndRev) {
-		
+	public static Report fromRevision(CBLRevision documentWithIDAndRev) {		
 		return null;
+	}
+
+	public Boolean getSyncedData() {
+		return syncedData;
+	}
+
+	public void setSyncedData(Boolean syncedData) {
+		this.syncedData = syncedData;
+	}
+
+	public Boolean getSyncedImage() {
+		return syncedImage;
+	}
+
+	public void setSyncedImage(Boolean syncedImage) {
+		this.syncedImage = syncedImage;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Integer getAttempts() {
+		return attempts;
+	}
+
+	public void setAttempts(Integer attempts) {
+		this.attempts = attempts;
 	}
 }

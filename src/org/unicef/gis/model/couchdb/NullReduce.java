@@ -2,9 +2,9 @@ package org.unicef.gis.model.couchdb;
 
 import java.util.List;
 
-import com.couchbase.touchdb.TDViewReduceBlock;
+import com.couchbase.cblite.CBLViewReduceBlock;
 
-public class NullReduce implements TDViewReduceBlock {
+public class NullReduce implements CBLViewReduceBlock {
 
 	@Override
 	public Object reduce(List<Object> keys, List<Object> values,

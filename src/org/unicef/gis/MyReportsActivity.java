@@ -10,9 +10,12 @@ import org.unicef.gis.model.couchdb.ReportLoader;
 import org.unicef.gis.ui.report.CreateReportActivity;
 import org.unicef.gis.ui.report.ReportRowAdapter;
 
+import android.accounts.Account;
+import android.accounts.AccountManager;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
@@ -23,12 +26,11 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.couchbase.touchdb.router.TDURLStreamHandlerFactory;
+import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
 
 public class MyReportsActivity extends ListActivity implements LoaderCallbacks<List<Report>> {	
-	//TouchDB initialization code
 	{
-        TDURLStreamHandlerFactory.registerSelfIgnoreError();
+		CBLURLStreamHandlerFactory.registerSelfIgnoreError();
     }
 	
 	private static final int LOADER_ID = 111; 
@@ -44,6 +46,8 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 	//recreating it.
 	private boolean justCreated = false;
 		
+	private Account dummyAccount;
+		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,10 +62,26 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 		
 		if (checkAddressPreference() && checkTags()){			
 			setupAdapter();										
-			refreshData();
+			refreshData();			
+			initDummyAccount();
+			scheduleSync();
 		}
 	}
 
+	private void scheduleSync() {
+        ContentResolver.addPeriodicSync(
+                dummyAccount,
+                "org.unicef.gis.provider",
+                new Bundle(),
+                5);
+	}
+
+	private void initDummyAccount() {
+		dummyAccount = new Account("dummyaccount", "unicef-gis.org");
+		AccountManager accountManager = (AccountManager) this.getSystemService(ACCOUNT_SERVICE);
+		accountManager.addAccountExplicitly(dummyAccount, null, null);		
+	}
+	
 	private void refreshData() {
 		displaySpinningWheelWhileLoading();
 		dbAdapter.notifyDataSetChanged();
@@ -81,7 +101,7 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 			refreshData();			
 
 		justCreated = false;
-				
+						
 		super.onResume();
 	}
 	

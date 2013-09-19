@@ -54,14 +54,17 @@ public class ReportRowAdapter extends ArrayAdapter<Report> {
 		ImageView thumbnailView = (ImageView) view.findViewById(R.id.row_report_thumbnail);
 		TextView descriptionView = (TextView) view.findViewById(R.id.row_report_description);
 		TextView timestampView = (TextView) view.findViewById(R.id.row_report_date_time);
+		TextView syncedView = (TextView) view.findViewById(R.id.row_report_synced);
 
 		Uri imageUri = Uri.parse(report.getImageUri());
 		String description = report.getTitle();
 		String timestamp = report.getTimestamp();
+		boolean synced = report.getSyncedImage();
 
 		asyncLoadThumbnail(thumbnailView, imageUri);
 		descriptionView.setText(description);
 		timestampView.setText(formatTimestamp(timestamp));
+		syncedView.setText(synced ? "Uploaded" : "");
 		
 		return view;
 	}

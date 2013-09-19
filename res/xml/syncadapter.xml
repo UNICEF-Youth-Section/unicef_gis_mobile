@@ -2,7 +2,7 @@
 <sync-adapter
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:contentAuthority="org.unicef.gis.provider"
-        android:accountType="org.unicef.gis"
+        android:accountType="unicef-gis.org"
         android:userVisible="true"
         android:supportsUploading="true"
         android:allowParallelSyncs="false"
