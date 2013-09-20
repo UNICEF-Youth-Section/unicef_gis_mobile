@@ -56,7 +56,12 @@ public class Camera {
 	
 	//Expects a uri of the form file://FILE_PATH
 	public static File fileFromUri(Uri uri) {
-		return new File(uri.toString().substring(8));
+		return fileFromString(uri.toString());
+	}
+	
+	//Expects a string of the form file://FILE_PATH
+	public static File fileFromString(String uri) {
+		return new File(uri.substring(8));
 	}
 	
 	public void addPicToGallery(File imageFile) {
