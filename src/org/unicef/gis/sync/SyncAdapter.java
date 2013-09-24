@@ -12,12 +12,13 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
-import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.Charset;
 import java.util.List;
 
 import org.codehaus.jackson.map.ObjectMapper;
+import org.unicef.gis.infrastructure.RoutesResolver;
+import org.unicef.gis.infrastructure.ServerUrlPreferenceNotSetException;
 import org.unicef.gis.infrastructure.data.CouchDbLiteStoreAdapter;
 import org.unicef.gis.infrastructure.image.Camera;
 import org.unicef.gis.model.Report;
@@ -166,7 +167,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 			byte[] extra = bos.toByteArray();			
             int contentLength = extra.length;            
             contentLength += image.length();            
-            contentLength += json.length();
+            contentLength += json.getBytes(Charset.defaultCharset()).length;
             
             conn = openConnection(boundary, contentLength);						
 			
@@ -177,6 +178,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (ServerUrlPreferenceNotSetException e) {
 			e.printStackTrace();
 		} finally {
 			if (out != null) {
@@ -215,13 +218,14 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	}
 
 	private HttpURLConnection openConnection(String boundary, int contentLength) throws IOException,
-			MalformedURLException {		
-		HttpURLConnection conn = (HttpURLConnection) new URL("http://192.168.0.148:8000/api/sync_spike/").openConnection();
+			MalformedURLException, ServerUrlPreferenceNotSetException {		
+		
+		RoutesResolver r = new RoutesResolver(getContext());
+		
+		HttpURLConnection conn = (HttpURLConnection) r.syncReport().openConnection();
 		conn.setReadTimeout(10000);
 		conn.setConnectTimeout(15000);
 		conn.setDoOutput(true);
-		
-		//conn.setRequestProperty("Content-Type", "application/x-www-form-urlencoded; charset=" + charset);
 		
 		conn.setRequestProperty("Content-Type", "multipart/form-data; boundary=" + boundary);
         conn.setFixedLengthStreamingMode(contentLength);

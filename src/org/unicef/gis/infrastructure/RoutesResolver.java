@@ -40,6 +40,14 @@ public class RoutesResolver {
 		}
 	}
 	
+	public URL syncReport() throws ServerUrlPreferenceNotSetException {
+		try {
+			return new URL(getBaseUrl() + "sync_spike/");
+		} catch (MalformedURLException e) {
+			return null;
+		} 
+	}
+	
 	public String getBaseUrl() throws ServerUrlPreferenceNotSetException {
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		String baseUrl = prefs.getString(PREF_SERVER_URL, "");
@@ -54,5 +62,5 @@ public class RoutesResolver {
 			baseUrl = baseUrl + "/";
 		
 		return baseUrl + "api/";
-	}
+	}	
 }
