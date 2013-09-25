@@ -6,11 +6,10 @@ import java.util.List;
 import org.ektorp.CouchDbConnector;
 import org.ektorp.impl.StdCouchDbInstance;
 import org.unicef.gis.model.Report;
-import org.unicef.gis.model.views.AllReportsByTimestampDesc;
-import org.unicef.gis.model.views.PendingSyncReports;
+import org.unicef.gis.model.couchdb.views.AllReportsByTimestampDesc;
+import org.unicef.gis.model.couchdb.views.PendingSyncReports;
 
 import android.content.Context;
-import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
 import android.util.Log;
@@ -19,7 +18,7 @@ import com.couchbase.cblite.CBLDatabase;
 import com.couchbase.cblite.CBLServer;
 import com.couchbase.cblite.ektorp.CBLiteHttpClient;
 
-public class CouchDbLiteStoreAdapter implements IUnicefGisStoreAdapter {
+public class CouchDbLiteStoreAdapter {
 	public static final String REMOTE_DB_URL = "http://192.168.0.140:5984/unicef_gis";
 	public static final String TOUCH_DB_NAME = "unicef_gis_touch_db";
 	private static final String DESIGN_DOC_NAME = "design_doc";
@@ -52,7 +51,6 @@ public class CouchDbLiteStoreAdapter implements IUnicefGisStoreAdapter {
 		}
 	}
 
-	@Override
 	public void saveReport(Context context, String description,
 			Location location, Uri imageUri, List<String> tags) {
 		Report report = new Report(description, location, imageUri, tags);		
@@ -63,12 +61,6 @@ public class CouchDbLiteStoreAdapter implements IUnicefGisStoreAdapter {
 		ektorp().update(report);
 	}
 
-	@Override
-	public Cursor getReportsCursor(Context context) {
-		return null;
-	}
-	
-	@Override
 	public List<Report> getReports() {			
 		return Report.collectionFromMap(allReports.query());
 	}

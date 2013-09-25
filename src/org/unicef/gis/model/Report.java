@@ -1,5 +1,6 @@
 package org.unicef.gis.model;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -8,6 +9,9 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
 import org.ektorp.support.OpenCouchDbDocument;
 
 import com.couchbase.cblite.CBLRevision;
@@ -200,5 +204,10 @@ public class Report extends OpenCouchDbDocument {
 
 	public void setAttempts(Integer attempts) {
 		this.attempts = attempts;
+	}
+
+	public String json() throws JsonGenerationException, JsonMappingException, IOException {
+		ObjectMapper mapper = new ObjectMapper();
+		return mapper.writeValueAsString(this);
 	}
 }

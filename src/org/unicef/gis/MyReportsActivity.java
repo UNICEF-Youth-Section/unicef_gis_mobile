@@ -2,16 +2,20 @@ package org.unicef.gis;
 
 import java.util.List;
 
+import org.unicef.gis.auth.Authenticator;
 import org.unicef.gis.infrastructure.RoutesResolver;
 import org.unicef.gis.infrastructure.ServerUrlPreferenceNotSetException;
 import org.unicef.gis.infrastructure.data.UnicefGisStore;
 import org.unicef.gis.model.Report;
 import org.unicef.gis.model.couchdb.ReportLoader;
+import org.unicef.gis.ui.AuthenticatorActivity;
 import org.unicef.gis.ui.report.CreateReportActivity;
 import org.unicef.gis.ui.report.ReportRowAdapter;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.accounts.AccountManagerCallback;
+import android.accounts.AccountManagerFuture;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
@@ -28,7 +32,7 @@ import android.widget.TextView;
 
 import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
 
-public class MyReportsActivity extends ListActivity implements LoaderCallbacks<List<Report>> {	
+public class MyReportsActivity extends ListActivity implements LoaderCallbacks<List<Report>>, AccountManagerCallback<Bundle> {	
 	{
 		CBLURLStreamHandlerFactory.registerSelfIgnoreError();
     }
@@ -45,13 +49,15 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 	//restart loaders twice when we come back to this activity from another one without
 	//recreating it.
 	private boolean justCreated = false;
-		
-	private Account dummyAccount;
+			
+	private AccountManager accountManager = null;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_my_reports);
+		
+		accountManager = AccountManager.get(this);
 		
 		justCreated = true;
 						
@@ -63,25 +69,33 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 		if (checkAddressPreference() && checkTags()){			
 			setupAdapter();										
 			refreshData();			
-			initDummyAccount();
-			scheduleSync();
+			setupAccount();
 		}
 	}
 
-	private void scheduleSync() {
+	private void scheduleSync(Account account) {	
+		ContentResolver.setMasterSyncAutomatically(true);
+		
         ContentResolver.addPeriodicSync(
-                dummyAccount,
+                account,
                 "org.unicef.gis.provider",
                 new Bundle(),
                 5);
 	}
 
-	private void initDummyAccount() {
-		dummyAccount = new Account("dummyaccount", "unicef-gis.org");
-		AccountManager accountManager = (AccountManager) this.getSystemService(ACCOUNT_SERVICE);
-		accountManager.addAccountExplicitly(dummyAccount, null, null);		
+	private void setupAccount() {
+		Account[] accounts = accountManager.getAccountsByType(Authenticator.ACCOUNT_TYPE);
+		
+		if (accounts.length == 0) {
+			Bundle options = new Bundle();
+			options.putBoolean(AuthenticatorActivity.PARAM_SHOULD_AUTHENTICATE, false);
+			
+			accountManager.addAccount(Authenticator.ACCOUNT_TYPE, Authenticator.AUTH_TOKEN_TYPE, null, options, this, this, null);
+		} else {			
+			scheduleSync(accounts[0]);
+		}		
 	}
-	
+
 	private void refreshData() {
 		displaySpinningWheelWhileLoading();
 		dbAdapter.notifyDataSetChanged();
@@ -169,5 +183,10 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 		
 		ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
         root.removeView(progressBar);
+	}
+
+	@Override
+	public void run(AccountManagerFuture<Bundle> arg0) {
+		setupAccount();
 	}
 }

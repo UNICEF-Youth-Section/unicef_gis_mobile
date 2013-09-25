@@ -7,18 +7,16 @@ import org.unicef.gis.infrastructure.RoutesResolver;
 import org.unicef.gis.model.Report;
 import org.unicef.gis.model.Tag;
 
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.net.Uri;
 import android.preference.PreferenceManager;
 
 public class UnicefGisStore {
 	private final static String PREF_TAGS_FETCHED = "unicef_gis_store_pref_tags_fetched";
+	private final static String PREF_TAGS = "unicef_gis_store_pref_tags";
 	
 	private final Context context;
 	
@@ -36,64 +34,39 @@ public class UnicefGisStore {
 	
 	public void saveReport(String description, Location location, Uri imageUri,
 			List<String> tags) {
-		
-		//IUnicefGisStoreAdapter adapter = new SqlLiteStoreAdapter();
-		IUnicefGisStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
+		CouchDbLiteStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
 		adapter.saveReport(context, description, location, imageUri, tags);			
 	}
 	
-	//Do not close the db instance created by this method, since that would invalidate the cursor. 
-	public Cursor getReportsCursor() {
-		//IUnicefGisStoreAdapter adapter = new SqlLiteStoreAdapter();
-		IUnicefGisStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
-		return adapter.getReportsCursor(context);		
-	}
-	
 	public List<Report> getReports() {
-		IUnicefGisStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
+		CouchDbLiteStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
 		return adapter.getReports();
 	}
 
 	public void saveTags(List<Tag> tags) {
-		UnicefGisDbHelper dbHelper = new UnicefGisDbHelper(context);
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		StringBuffer sb = new StringBuffer();
+		boolean first = true;
 		
-		//Delete all tags before creating the new ones, we regard tags as value objects
-		db.delete(UnicefGisDbContract.Tag.TABLE_NAME, "1=1", new String[0]);
-
 		for (Tag tag : tags) {
-			ContentValues values = new ContentValues();
-			values.put(UnicefGisDbContract.Tag.COLUMN_NAME_NAME, tag.getValue());
-
-			db.insert(UnicefGisDbContract.Tag.TABLE_NAME, "null", values);
+			if (!first) sb.append(","); 			
+			first = false;
+			
+			sb.append(tag.getValue());			 				
 		}
-
-		db.close();
 		
+		writePref(PREF_TAGS, sb.toString());		
 		setTagsHaveBeenFetched(true);		
 	}
 	
 	public List<Tag> retrieveTags() {
-		UnicefGisDbHelper dbHelper = new UnicefGisDbHelper(context);
-		SQLiteDatabase db = dbHelper.getWritableDatabase();
+		String tagsString = readPref(PREF_TAGS, "");
+		String[] tagsArray = tagsString.split(",");
 		
-		String[] projection = { UnicefGisDbContract.Tag.COLUMN_NAME_NAME };
-		String sortOrder = UnicefGisDbContract.Tag.COLUMN_NAME_NAME + " ASC";
-		String selection = "1=1";
-		String[] selectionArgs = new String[0];
+		List<Tag> tags = new ArrayList<Tag>();		
 		
-		Cursor c = db.query(UnicefGisDbContract.Tag.TABLE_NAME, 
-			    projection, selection, selectionArgs, null, null, sortOrder);
-		
-		List<Tag> tags = new ArrayList<Tag>();
-		
-		c.moveToFirst();
-		while (!c.isAfterLast()) {
-			tags.add(new Tag(c.getString(0)));
-			c.moveToNext();
+		for (int i = 0; i < tagsArray.length; i++) {
+			tags.add(new Tag(tagsArray[i]));
 		}
-		
-		db.close();
 		
 		return tags;
 	}	
@@ -105,6 +78,10 @@ public class UnicefGisStore {
 	private SharedPreferences prefs() {
 		final SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
 		return prefs;
+	}
+	
+	private String readPref(String property, String def) {
+		return prefs().getString(property, def);
 	}
 	
 	private boolean readPref(String property, Boolean def) {		

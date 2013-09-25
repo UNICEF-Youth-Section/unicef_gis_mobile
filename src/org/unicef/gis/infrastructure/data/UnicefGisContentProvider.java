@@ -32,17 +32,7 @@ public class UnicefGisContentProvider extends ContentProvider {
 	@Override
 	public Cursor query(Uri uri, String[] projection, String selection,
 			String[] selectionArgs, String sortOrder) {
-		if (uri.equals(UnicefGisDbContract.Report.CONTENT_URI))
-			return queryReports();
-					
 		return null;
-	}
-	
-	//TODO: the store should return a custom Cursor dettached from the original DB instance, so that
-	//we don't risk leaking databases.
-	private Cursor queryReports() {
-		UnicefGisStore store = new UnicefGisStore(getContext());
-		return store.getReportsCursor();
 	}
 
 	@Override

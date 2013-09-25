@@ -1,6 +1,9 @@
 package org.unicef.gis.infrastructure.image;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -9,6 +12,7 @@ import org.unicef.gis.R;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -32,10 +36,10 @@ public class Camera {
 	private static String JPEG_PREFIX = "pic";
 	private static String JPEG_FILE_SUFFIX = ".jpg";
 
-	private final Activity activity;
+	private final Context context;
 	
-	public Camera(Activity activity) {
-		this.activity = activity;
+	public Camera(Context context) {
+		this.context = context;
 	}
 	
 	private static Bitmap loadPlaceholder() {
@@ -49,7 +53,7 @@ public class Camera {
 		Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);				
 		takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uri);
 		
-		activity.startActivityForResult(takePictureIntent, TAKE_PICTURE_INTENT);
+		((Activity)context).startActivityForResult(takePictureIntent, TAKE_PICTURE_INTENT);
 		
 		return f;
 	}
@@ -67,7 +71,7 @@ public class Camera {
 	public void addPicToGallery(File imageFile) {
 	    Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
 	    mediaScanIntent.setData(Uri.fromFile(imageFile));
-	    activity.sendBroadcast(mediaScanIntent);
+	    ((Activity)context).sendBroadcast(mediaScanIntent);
 	}
 	
 	@SuppressLint("SimpleDateFormat")
@@ -137,5 +141,67 @@ public class Camera {
 
 	public Uri getUri(File imageFile) {
 		return Uri.fromFile(imageFile);
+	}
+	
+	public File rotateImageIfNecessary(String imageUri) {
+		Log.d("Camera", "Rotating image" + imageUri);
+		
+		File imageFile = fileFromString(imageUri);
+		
+		BitmapFactory.Options options = new BitmapFactory.Options();
+		options.inJustDecodeBounds = false;		
+		options.inSampleSize = 1;
+		
+		Bitmap originalBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+		
+		ExifInterface exif;
+		try {
+			exif = new ExifInterface(imageFile.getAbsolutePath());
+		} catch (IOException e) {
+			e.printStackTrace();
+			Log.d("SyncAdapter", "Couldn't open EXIF data, settling with the original image.");
+			return imageFile;
+		}
+		
+		int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
+		
+		Matrix matrix = new Matrix();
+		matrix.postRotate(exifOrientationToDegrees(orientation));
+		
+		Bitmap rotatedBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.getWidth(), originalBitmap.getHeight(), matrix, true);
+		
+		String rotatedFileName = imageFile.getParent() + "/rotated-" + imageFile.getName();
+		
+		File rotated = null;
+		FileOutputStream out = null;
+		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+		try {
+			rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+			rotated = new File(rotatedFileName);
+			rotated.createNewFile();
+			
+			out = new FileOutputStream(rotated);
+			out.write(bytes.toByteArray());			
+		} catch (FileNotFoundException e) {		
+			e.printStackTrace();
+			Log.d("Camera", "Couldn't save rotated image, settling with original image.");
+			return imageFile;
+		} catch (IOException e) {
+			e.printStackTrace();	
+			Log.d("Camera", "Couldn't save rotated image, settling with original image.");
+			return imageFile;
+		} finally {
+			if (out != null){
+				try {
+					out.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+					Log.d("Camera", "Couldn't save rotated image, settling with original image.");
+					return imageFile;
+				}
+			}
+		}
+		
+		return new File(rotatedFileName);
 	}
 }

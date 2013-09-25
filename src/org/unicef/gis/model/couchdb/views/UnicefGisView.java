@@ -1,4 +1,4 @@
-package org.unicef.gis.model.views;
+package org.unicef.gis.model.couchdb.views;
 
 import java.util.Map;
 
