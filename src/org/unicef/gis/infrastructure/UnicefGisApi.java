@@ -100,6 +100,9 @@ public class UnicefGisApi {
 
 	public List<Tag> getTags() throws ServerUrlPreferenceNotSetException {
 		JSONArray tags = getArray(routes.getTags());
+		
+		if (tags == null) return null;
+		
 		return Tag.listFromJSON(tags);	
 	}
 	

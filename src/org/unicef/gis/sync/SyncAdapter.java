@@ -19,6 +19,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.unicef.gis.auth.Authenticator;
+import org.unicef.gis.infrastructure.Notificator;
 import org.unicef.gis.infrastructure.RoutesResolver;
 import org.unicef.gis.infrastructure.ServerUrlPreferenceNotSetException;
 import org.unicef.gis.infrastructure.UnicefGisApi;
@@ -54,7 +55,8 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 	private UnicefGisApi api = null;
 	private UnicefGisStore store = null;
 	private AccountManager accountManager = null;
-
+	private Notificator notificator = null;
+	
 	public SyncAdapter(Context context, boolean autoInitialize) {
 		super(context, autoInitialize);
 		couchDb = new CouchDbLiteStoreAdapter(getContext());
@@ -62,6 +64,7 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 		api = new UnicefGisApi(getContext());
 		store = new UnicefGisStore(getContext());
 		accountManager = AccountManager.get(context);
+		notificator = new Notificator(getContext());
 	}
 
 	public SyncAdapter(Context context, boolean autoInitialize,
@@ -173,10 +176,12 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 				conn.disconnect();
 			}
 
-			if (status == HttpURLConnection.HTTP_OK)
+			if (status == HttpURLConnection.HTTP_OK) {
 				markAsSyncd(report);
-			else
+				notificator.notifyReportUploaded(report);
+			} else {
 				markAsNotSyncd(report);
+			}
 			
 			if (status == HttpURLConnection.HTTP_UNAUTHORIZED)
 				throw new AuthenticationException();

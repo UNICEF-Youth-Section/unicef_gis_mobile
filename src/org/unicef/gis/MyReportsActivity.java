@@ -1,6 +1,8 @@
 package org.unicef.gis;
 
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import org.unicef.gis.auth.Authenticator;
 import org.unicef.gis.infrastructure.RoutesResolver;
@@ -9,6 +11,7 @@ import org.unicef.gis.infrastructure.data.UnicefGisStore;
 import org.unicef.gis.model.Report;
 import org.unicef.gis.model.couchdb.ReportLoader;
 import org.unicef.gis.ui.AuthenticatorActivity;
+import org.unicef.gis.ui.SettingsActivity;
 import org.unicef.gis.ui.report.CreateReportActivity;
 import org.unicef.gis.ui.report.ReportRowAdapter;
 
@@ -23,11 +26,12 @@ import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.Loader;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
+import android.view.Window;
 import android.widget.Button;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
@@ -42,7 +46,6 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 	private TextView emptyView;
 	private Button newReportButton;
 	private ReportRowAdapter dbAdapter;
-	private ProgressBar progressBar;
 	
 	//There seems to be a bug in the way loaders interact with the activity lifecycle, 
 	//which forces us to call loaders onCreate, so we use this flag in order not to
@@ -51,10 +54,15 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 	private boolean justCreated = false;
 			
 	private AccountManager accountManager = null;
-		
+
+	private Timer timer;
+			
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		
 		setContentView(R.layout.activity_my_reports);
 		
 		accountManager = AccountManager.get(this);
@@ -69,8 +77,26 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 		if (checkAddressPreference() && checkTags()){			
 			setupAdapter();										
 			refreshData();			
-			setupAccount();
+			setupAccount();			
 		}
+	}
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		openPreferences();
+		return true;
+	}
+	
+	private void openPreferences() {
+		startActivity(new Intent(this, SettingsActivity.class));
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.my_reports_actions, menu);
+		
+		return super.onCreateOptionsMenu(menu);
 	}
 
 	private void scheduleSync(Account account) {	
@@ -115,10 +141,41 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 			refreshData();			
 
 		justCreated = false;
-						
+
+		setupRefreshTimer();
+		
 		super.onResume();
 	}
 	
+	private void setupRefreshTimer() {
+		timer = new Timer();
+		timer.schedule(new TimerTask() {			
+			@Override
+			public void run() {
+				runOnUiThread(new Runnable() {					
+					@Override
+					public void run() {
+						refreshData();						
+					}
+				});
+			}
+		}, 30000, 30000);
+	}
+
+	@Override
+	protected void onPause() {
+		super.onPause();
+		
+		cancelRefreshTimer();
+	}
+	
+	private void cancelRefreshTimer() {
+		if (timer != null)
+			timer.cancel();
+		
+		timer = null;
+	}
+
 	public void startCreateReportActivity(View view) {
 		startActivity(new Intent(this, CreateReportActivity.class));
 	}
@@ -129,14 +186,8 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 	}
 
 	private void displaySpinningWheelWhileLoading() {
-		// Create a progress bar to display while the list loads
-        progressBar = new ProgressBar(this);
-        progressBar.setLayoutParams(new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-        progressBar.setIndeterminate(true);
-        
-        // Must add the progress bar to the root of the layout
-        ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
-        root.addView(progressBar);
+		setProgressBarIndeterminate(true);
+		setProgressBarIndeterminateVisibility(true);
 	}
 
 	private void loadControls() {
@@ -181,8 +232,7 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 		dbAdapter.clear();
 		dbAdapter.addAll(reports);
 		
-		ViewGroup root = (ViewGroup) findViewById(android.R.id.content);
-        root.removeView(progressBar);
+		setProgressBarIndeterminateVisibility(false);
 	}
 
 	@Override

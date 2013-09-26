@@ -15,6 +15,13 @@
     <!-- Application theme. -->
     <style name="AppTheme" parent="android:Theme.Holo">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+	    <item name="android:actionBarStyle">@style/ActionBarIPS</item>
     </style>
+    
+	<style name="IndeterminateProgress" parent="@android:style/Widget.ProgressBar.Small">
+	</style>
 
+	<style name="ActionBarIPS" parent="android:Widget.Holo.ActionBar">
+	    <item name="android:indeterminateProgressStyle">@style/IndeterminateProgress</item>
+	</style>
 </resources>
