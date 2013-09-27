@@ -19,7 +19,6 @@ import com.couchbase.cblite.CBLServer;
 import com.couchbase.cblite.ektorp.CBLiteHttpClient;
 
 public class CouchDbLiteStoreAdapter {
-	public static final String REMOTE_DB_URL = "http://192.168.0.140:5984/unicef_gis";
 	public static final String TOUCH_DB_NAME = "unicef_gis_touch_db";
 	private static final String DESIGN_DOC_NAME = "design_doc";
 	
@@ -52,8 +51,11 @@ public class CouchDbLiteStoreAdapter {
 	}
 
 	public void saveReport(Context context, String description,
-			Location location, Uri imageUri, List<String> tags) {
+			Location location, Uri imageUri, List<String> tags, boolean postToTwitter, boolean postToFacebook) {
 		Report report = new Report(description, location, imageUri, tags);		
+		report.setPostToFacebook(postToFacebook);
+		report.setPostToTwitter(postToTwitter);
+		
 		ektorp().create(report);		
 	}
 	

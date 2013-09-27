@@ -48,4 +48,5 @@
 	<string name="share_on_twitter">Share on Twitter</string>
 	<string name="saving_report">Saving report&#8230;</string>
 	<string name="action_preferences">Preferences</string>
+	<string name="saving_account_details">Saving account details&#8230;</string>
 </resources>

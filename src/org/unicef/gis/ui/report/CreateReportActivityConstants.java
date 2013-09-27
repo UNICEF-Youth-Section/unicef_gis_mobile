@@ -12,6 +12,8 @@ public class CreateReportActivityConstants {
 	public static final String BUNDLE_CHOSEN_TAGS = "bundle_key_chosen_tags";
 	public static final String BUNDLE_DESCRIPTION = "bundle_key_description";
 	public static final String BUNDLE_CURRENT_STEP = "bundle_key_current_step";
+	public static final String BUNDLE_POST_TO_TWITTER = "bundle_key_post_to_twitter";
+	public static final String BUNDLE_POST_TO_FACEBOOK = "bundle_key_post_to_facebook";
 	
 	public static final String STEP_PIC = "step_pic";
 	public static final String STEP_TAG = "step_tag";

@@ -1,17 +1,16 @@
-package org.unicef.gis;
+package org.unicef.gis.ui;
 
 import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import org.unicef.gis.R;
 import org.unicef.gis.auth.Authenticator;
 import org.unicef.gis.infrastructure.RoutesResolver;
 import org.unicef.gis.infrastructure.ServerUrlPreferenceNotSetException;
 import org.unicef.gis.infrastructure.data.UnicefGisStore;
 import org.unicef.gis.model.Report;
 import org.unicef.gis.model.couchdb.ReportLoader;
-import org.unicef.gis.ui.AuthenticatorActivity;
-import org.unicef.gis.ui.SettingsActivity;
 import org.unicef.gis.ui.report.CreateReportActivity;
 import org.unicef.gis.ui.report.ReportRowAdapter;
 
@@ -76,8 +75,7 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 		
 		if (checkAddressPreference() && checkTags()){			
 			setupAdapter();										
-			refreshData();			
-			setupAccount();			
+			refreshData();									
 		}
 	}
 	
@@ -100,7 +98,7 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 	}
 
 	private void scheduleSync(Account account) {	
-		ContentResolver.setMasterSyncAutomatically(true);
+		ContentResolver.setSyncAutomatically(account, "org.unicef.gis.provider", true);
 		
         ContentResolver.addPeriodicSync(
                 account,
@@ -137,11 +135,13 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 	
 	@Override
 	protected void onResume() {
+		setupAccount();
+		
 		if (!justCreated)
 			refreshData();			
 
 		justCreated = false;
-
+		
 		setupRefreshTimer();
 		
 		super.onResume();

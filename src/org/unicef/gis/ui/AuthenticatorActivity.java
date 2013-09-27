@@ -11,6 +11,8 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 public class AuthenticatorActivity extends AccountAuthenticatorActivity {
@@ -24,18 +26,29 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	private UnicefGisApi api = null;
 	private AccountManager accountManager = null;
 	
+	private EditText editEmail = null;
+	private EditText editPassword = null;
+	private Button login = null;
+	
 	@Override
 	protected void onCreate(Bundle icicle) {
 		super.onCreate(icicle);
 		setContentView(R.layout.activity_login);
 		
+		editEmail = (EditText) findViewById(R.id.edit_email);
+		editPassword = (EditText) findViewById(R.id.edit_password);
+		login = (Button) findViewById(R.id.login_button);
+		
 		api = new UnicefGisApi(this);
 		accountManager = AccountManager.get(this);
 	}
 	
+	
 	public void submit(View view) {
-	    final String email = ((TextView) findViewById(R.id.edit_email)).getText().toString();
-	    final String password = ((TextView) findViewById(R.id.edit_password)).getText().toString();
+		disableSubmitButton();
+		
+	    final String email = editEmail.getText().toString();
+	    final String password = editPassword.getText().toString();
 	    
 	    final boolean shouldAuthenticate = getIntent().getExtras().getBoolean(AuthenticatorActivity.PARAM_SHOULD_AUTHENTICATE, true);
 	    
@@ -63,25 +76,60 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity {
 	    authentication.execute();	    
 	}
 
+	private void disableSubmitButton() {		
+		login.setText(R.string.saving_account_details);
+		login.setEnabled(false);
+	}
+	
+	private void reenableSubmitButton() {
+		login.setText(R.string.button_login);
+		login.setEnabled(true);
+	}
+
+
 	private void finishLogin(Intent intent, String email, String password) {
-		final Account account = new Account(email, Authenticator.ACCOUNT_TYPE);
-		
 		String authToken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
 		
-		if (getIntent().getBooleanExtra(PARAM_NEW_ACCOUNT, false)) {			
-			accountManager.addAccountExplicitly(account, password, null);
-			accountManager.setAuthToken(account, Authenticator.AUTH_TOKEN_TYPE, authToken);
-			finishWithAuthOk(intent);
+		Account targetAccount = updateAccounts(email, password, authToken);
+		
+		if (shouldHaveAuthenticated() && authFailed(authToken)){
+			showInvalidCredentialsFeedback();					
 		} else {
-			if (authToken == null || authToken.isEmpty()) {
-				showInvalidCredentialsFeedback();
-			} else {
-				accountManager.setAuthToken(account, Authenticator.AUTH_TOKEN_TYPE, authToken);
-				accountManager.setPassword(account, password);
-				finishWithAuthOk(intent);
-			}
-		}						
+			accountManager.setAuthToken(targetAccount, Authenticator.AUTH_TOKEN_TYPE, authToken);
+			finishWithAuthOk(intent);	
+		}
+				
+		reenableSubmitButton();
 	}
+
+
+	private boolean authFailed(String authToken) {
+		return authToken == null || authToken.isEmpty();
+	}
+
+
+	private boolean shouldHaveAuthenticated() {
+		return !getIntent().getBooleanExtra(PARAM_NEW_ACCOUNT, false);
+	}
+
+	private Account updateAccounts(String email, String password, String authToken) {
+		Account targetAccount = null;
+		Account[] accounts = accountManager.getAccountsByType(Authenticator.ACCOUNT_TYPE);
+		for (int i = 0; i < accounts.length; i++) {
+			if (accounts[i].name == email)
+				targetAccount = accounts[i];
+			else
+				accountManager.removeAccount(accounts[i], null, null);
+		}
+										
+		if (targetAccount == null){
+			targetAccount = new Account(email, Authenticator.ACCOUNT_TYPE);
+			accountManager.addAccountExplicitly(targetAccount, password, null);
+		}
+		
+		return targetAccount;
+	}
+
 
 	private void finishWithAuthOk(Intent intent) {
 		setAccountAuthenticatorResult(intent.getExtras());

@@ -34,6 +34,7 @@
         android:layout_gravity="center"
         android:layout_marginTop="32dp"
         android:onClick="submit" 
+        android:id="@+id/login_button"
         />
 </LinearLayout>
 

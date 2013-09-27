@@ -6,6 +6,12 @@ import android.content.ContentValues;
 import android.database.Cursor;
 import android.net.Uri;
 
+/***
+ * At the moment we only use the content provider because it's a requirement
+ * of the sync adapter framework. This class is just a stub.
+ * @author mverzilli
+ *
+ */
 public class UnicefGisContentProvider extends ContentProvider {
 	public final static String AUTHORITY = "org.unicef.gis.provider";
 	

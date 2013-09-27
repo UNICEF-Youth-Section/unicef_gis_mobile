@@ -16,6 +16,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.CompoundButton.OnCheckedChangeListener;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,12 +33,12 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	private TextView reportDescription;
 	private TextView tagsView;
 	private Button saveReport;
+
+	private CheckBox postToTwitterCheckbox;
+	private CheckBox postToFacebookCheckbox;
 	
 	@Override
 	public void onAttach(Activity activity) {
-		Log.d("ReportSummaryFragment", "onAttach");
-		Log.d("ReportSummaryFragment", String.valueOf(System.identityHashCode(this)));
-		
 		super.onAttach(activity);
 		try {
 			callbacks = (IReportSummaryCallbacks) activity;
@@ -46,8 +49,6 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	
 	@Override
 	public void onDetach() {
-		Log.d("ReportSummaryFragment", "onDetach");
-		Log.d("ReportSummaryFragment", String.valueOf(System.identityHashCode(this)));
 		callbacks = null;
 		super.onDetach();
 	}
@@ -55,8 +56,6 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Log.d("ReportSummaryFragment", "onCreateView");
-		Log.d("ReportSummaryFragment", String.valueOf(System.identityHashCode(this)));
 		view = inflater.inflate(R.layout.fragment_summary, container, false);
 		
 		loadControls();
@@ -68,19 +67,22 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	
 	@Override
 	public void onResume() {		
-		Log.d("ReportSummaryFragment", "onResume");
-		Log.d("ReportSummaryFragment", String.valueOf(System.identityHashCode(this)));
-		
 		setupImage();
 		refreshTags();
 		refreshDescription();
+		refreshSocialNetworkCheckboxes();
 		super.onResume();
 	}
 	
+	private void refreshSocialNetworkCheckboxes() {
+		CreateReportActivity cra = (CreateReportActivity) getActivity();
+		if (cra == null) return;		
+	
+		setPostToTwitter(cra.getPostToTwitter());
+		setPostToFacebook(cra.getPostToFacebook());
+	}
+	
 	private void refreshDescription() {
-		Log.d("ReportSummaryFragment", "refreshDescription");
-		Log.d("ReportSummaryFragment", String.valueOf(System.identityHashCode(this)));
-		
 		CreateReportActivity cra = (CreateReportActivity) getActivity();
 		if (cra == null) return;
 		
@@ -88,9 +90,6 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	}
 
 	private void refreshTags() {		
-		Log.d("ReportSummaryFragment", "refreshDescription");
-		Log.d("ReportSummaryFragment", String.valueOf(System.identityHashCode(this)));
-		
 		CreateReportActivity cra = (CreateReportActivity) getActivity();
 		if (cra == null) return;
 				
@@ -101,8 +100,6 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	}
 
 	private CharSequence stringify(List<String> chosenTags) {
-		Log.d("ReportSummaryFragment", "stringify");
-		
 		StringBuffer sb = new StringBuffer("");
 		for (String string : chosenTags) {
 			if (sb.length() != 0) 
@@ -114,8 +111,6 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	}
 
 	private void loadControls() {		
-		Log.d("ReportSummaryFragment", "loadControls");
-		
 		imageView = (ImageView) view.findViewById(R.id.summary_picture); 
 		locationView = (TextView) view.findViewById(R.id.summary_location_display);
 		progressBar = (ProgressBar) view.findViewById(R.id.summary_progress_bar);
@@ -126,12 +121,23 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 		tagsView = (TextView) view.findViewById(R.id.summary_tags_chosen);
 		
 		saveReport = (Button) view.findViewById(R.id.summary_done);
+		
+		postToTwitterCheckbox = (CheckBox) view.findViewById(R.id.summary_post_to_twitter);
+		postToTwitterCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {			
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				notifyPostToTwitterChange(isChecked);
+			}
+		});
+		
+		postToFacebookCheckbox = (CheckBox) view.findViewById(R.id.summary_post_to_facebook);
+		postToFacebookCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+				notifyPostToFacebookChange(isChecked);
+			}
+		});
 	}
 
 	private void setupImage() {
-		Log.d("ReportSummaryFragment", "setupImage");
-		Log.d("ReportSummaryFragment", String.valueOf(System.identityHashCode(this)));
-		
 		CreateReportActivity cra = (CreateReportActivity) getActivity();
 		if (cra == null) return;
 		
@@ -139,9 +145,6 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	}
 
 	public void setLocation(Location location) {
-		Log.d("ReportSummaryFragment", "setLocation");
-		Log.d("ReportSummaryFragment", String.valueOf(System.identityHashCode(this)));
-		
 		// The fragment may not have been displayed yet even though locations maybe ready.
 		if (locationView != null) {
 			if (location == null) {
@@ -166,12 +169,19 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 
 	@Override
 	public void afterTextChanged(Editable text) {
-		Log.d("ReportSummaryFragment", "afterTextChanged");
-		Log.d("ReportSummaryFragment", String.valueOf(System.identityHashCode(this)));
-		
 		if (callbacks != null) {
 			callbacks.descriptionChanged(text.toString());
 		}
+	}
+	
+	public void notifyPostToTwitterChange(boolean shouldPost) {
+		if (callbacks != null)
+			callbacks.postToTwitterChanged(shouldPost);
+	}
+	
+	public void notifyPostToFacebookChange(boolean shouldPost) {
+		if (callbacks != null)
+			callbacks.postToFacebookChanged(shouldPost);
 	}
 
 	@Override
@@ -182,5 +192,15 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	public void onSavingReport() {
 		saveReport.setText(R.string.saving_report);
 		saveReport.setEnabled(false);
+	}
+
+	public void setPostToTwitter(boolean postToTwitter) {
+		if (postToTwitterCheckbox != null)
+			postToTwitterCheckbox.setChecked(postToTwitter);
+	}
+	
+	public void setPostToFacebook(boolean postToFacebook) {
+		if (postToFacebookCheckbox != null)
+			postToFacebookCheckbox.setChecked(postToFacebook);
 	}
 }

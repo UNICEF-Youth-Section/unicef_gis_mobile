@@ -13,7 +13,7 @@ import com.couchbase.cblite.CBLViewMapEmitBlock;
 
 public class AllReportsByTimestampDesc extends UnicefGisView {
 	private static final String VIEW_NAME = "reports";
-	private static final String VIEW_VERSION = "6.0";
+	private static final String VIEW_VERSION = "7.0";
 
 	public AllReportsByTimestampDesc(CBLDatabase db, String designDoc) {
 		super(db, designDoc);

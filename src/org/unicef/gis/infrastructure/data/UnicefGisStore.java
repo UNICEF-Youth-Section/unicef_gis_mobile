@@ -6,12 +6,11 @@ import java.util.List;
 import org.unicef.gis.infrastructure.RoutesResolver;
 import org.unicef.gis.model.Report;
 import org.unicef.gis.model.Tag;
+import org.unicef.gis.ui.report.ReportViewModel;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
-import android.location.Location;
-import android.net.Uri;
 import android.preference.PreferenceManager;
 
 public class UnicefGisStore {
@@ -32,10 +31,15 @@ public class UnicefGisStore {
 		return readPref(PREF_TAGS_FETCHED, Boolean.valueOf(false));
 	}
 	
-	public void saveReport(String description, Location location, Uri imageUri,
-			List<String> tags) {
+	public void saveReport(ReportViewModel viewModel) {
 		CouchDbLiteStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
-		adapter.saveReport(context, description, location, imageUri, tags);			
+		adapter.saveReport(context, 
+				viewModel.description, 
+				viewModel.location, 
+				viewModel.getImageUri(), 
+				viewModel.chosenTags, 
+				viewModel.postToTwitter, 
+				viewModel.postToFacebook);			
 	}
 	
 	public List<Report> getReports() {

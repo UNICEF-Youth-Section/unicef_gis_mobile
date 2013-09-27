@@ -1,11 +1,9 @@
 package org.unicef.gis.ui.report;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.unicef.gis.MyReportsActivity;
 import org.unicef.gis.R;
 import org.unicef.gis.infrastructure.ILocationServiceConsumer;
 import org.unicef.gis.infrastructure.LocationService;
@@ -13,6 +11,7 @@ import org.unicef.gis.infrastructure.data.UnicefGisStore;
 import org.unicef.gis.infrastructure.image.Camera;
 import org.unicef.gis.model.Tag;
 import org.unicef.gis.ui.AlertDialogFragment;
+import org.unicef.gis.ui.MyReportsActivity;
 
 import android.app.ActionBar;
 import android.app.Activity;
@@ -23,7 +22,6 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.graphics.Bitmap;
 import android.location.Location;
-import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -42,13 +40,11 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 	
 	private LocationService locationService;
 	
-	private Bitmap imageThumbnail = null;
-	private File imageFile;
-	private Location location = null;		
-	private ArrayList<String> chosenTags = null;	
-	private String description = null;
+	private ReportViewModel reportViewModel = null;
 	
 	private List<Tag> availableTags = null;
+	
+	public Bitmap imageThumbnail = null;
 		
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -56,6 +52,8 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_create_report);
+		
+		reportViewModel = new ReportViewModel();
 				
 		startLoadingTags();
 		
@@ -106,7 +104,7 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		if (tagsFragment == null) return;
 
 		tagsFragment.setAvailableTags(availableTags);
-		tagsFragment.setChosenTags(chosenTags);
+		tagsFragment.setChosenTags(reportViewModel.chosenTags);
 	}
 	
 	private void startLoadingTags() {
@@ -130,7 +128,7 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		
 		try {
 			Camera camera = new Camera(this);		
-			imageFile = camera.takePicture();
+			reportViewModel.imageFile = camera.takePicture();
 		} catch (IOException e) {
 			showAlertDialog(R.string.configuration_problem, R.string.configuration_problem_prompt, "configuration_problem");
 			e.printStackTrace();
@@ -140,34 +138,20 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 	
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		Log.d("CreateReportActivity", "onSaveInstanceState");
-		
-		if (imageFile != null)
-			outState.putString(CreateReportActivityConstants.BUNDLE_IMAGE_FILE, imageFile.getAbsolutePath());
-		
-		outState.putStringArrayList(CreateReportActivityConstants.BUNDLE_CHOSEN_TAGS, getChosenTags());		
-		outState.putString(CreateReportActivityConstants.BUNDLE_DESCRIPTION, description);
-		
-		outState.putString(CreateReportActivityConstants.BUNDLE_CURRENT_STEP, currentStep);
-		
+		reportViewModel.saveInstanceState(outState);		
+		outState.putString(CreateReportActivityConstants.BUNDLE_CURRENT_STEP, currentStep);		
 		super.onSaveInstanceState(outState);		
 	}
 	
 	@Override
 	protected void onRestoreInstanceState(Bundle savedInstanceState) {
-		Log.d("CreateReportActivity", "onRestoreInstanceState");		
 		super.onRestoreInstanceState(savedInstanceState);
 		
-		String savedImageFilePath = savedInstanceState.getString(CreateReportActivityConstants.BUNDLE_IMAGE_FILE);
-		if (savedImageFilePath != null) 
-			imageFile = new File(savedImageFilePath);
-		
-		setChosenTags(savedInstanceState.getStringArrayList(CreateReportActivityConstants.BUNDLE_CHOSEN_TAGS));		
+		reportViewModel.restoreInstanceState(savedInstanceState);		
 		
 		if (availableTags == null)
 			availableTags = getTagsFragment.getAvailableTags();
 		
-		description = savedInstanceState.getString(CreateReportActivityConstants.BUNDLE_DESCRIPTION);
 		currentStep = savedInstanceState.getString(CreateReportActivityConstants.BUNDLE_CURRENT_STEP);
 		
 		refreshTagsFragment();
@@ -180,7 +164,9 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 	private void refreshSummaryFragment() {
 		if (summaryFragment == null) return;
 		
-		summaryFragment.setReportDescription(description);
+		summaryFragment.setReportDescription(reportViewModel.description);
+		summaryFragment.setPostToTwitter(reportViewModel.postToTwitter);
+		summaryFragment.setPostToFacebook(reportViewModel.postToFacebook);
 	}
 	
 	@Override
@@ -269,7 +255,7 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 			startActivity(new Intent(this, MyReportsActivity.class));
 		
 		Camera camera = new Camera(this);
-		camera.addPicToGallery(imageFile);
+		camera.addPicToGallery(reportViewModel.imageFile);
 		
 		currentStep = CreateReportActivityConstants.STEP_TAG;
 	}
@@ -323,7 +309,7 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		Log.d("CreateReportActivity", "getTakenPictureThumbnail");
 		if (imageThumbnail == null){
 			Camera camera = new Camera(this);
-			imageThumbnail = camera.getThumbnail(imageFile, CreateReportActivityConstants.SUMMARY_VIEW_THUMBNAIL_FACTOR);
+			imageThumbnail = camera.getThumbnail(reportViewModel.imageFile, CreateReportActivityConstants.SUMMARY_VIEW_THUMBNAIL_FACTOR);
 		}
 		
 		return imageThumbnail;
@@ -376,8 +362,8 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 	@Override
 	public void onLocationChanged(Location location) {
 		Log.d("CreateReportActivity", "onLocationChanged");
-		this.location = location;
-		summaryFragment.setLocation(this.location);
+		reportViewModel.location = location;
+		summaryFragment.setLocation(reportViewModel.location);
 	}
 	
 	public void onSaveReport(View view) {
@@ -393,19 +379,16 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 		if (summaryFragment != null) {
 			summaryFragment.onSavingReport();
 		}
-		
-		Camera camera = new Camera(this);		
-		Uri imageUri = camera.getUri(imageFile);
-		
+	
 		UnicefGisStore store = new UnicefGisStore(this);		
-		store.saveReport(description, location, imageUri, chosenTags);		
+		store.saveReport(reportViewModel);		
 	}
 
 	private boolean validate() {
-		if (location == null) {
+		if (reportViewModel.location == null) {
 			showLocationMissingDialog();
 			return false;
-		} else if (description == null || description.isEmpty()) {
+		} else if (reportViewModel.description == null || reportViewModel.description.isEmpty()) {
 			showDescriptionMissingDialog();
 			return false;
 		}			
@@ -428,7 +411,7 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 	}
 
 	public ArrayList<String> getChosenTags() {
-		return chosenTags;
+		return reportViewModel.chosenTags;
 	}
 
 	@Override
@@ -439,7 +422,7 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 
 	private void setChosenTags(ArrayList<String> chosenTags) {
 		Log.d("CreateReportActivity", "setChosenTags");
-		this.chosenTags = chosenTags;
+		reportViewModel.chosenTags = chosenTags;
 	}
 
 	public List<Tag> getAvailableTags() {
@@ -448,15 +431,33 @@ public class CreateReportActivity extends Activity implements ILocationServiceCo
 
 	@Override
 	public void chosenTagsChanged(ArrayList<String> chosenTags) {
-		this.chosenTags = chosenTags;
+		setChosenTags(chosenTags);
 	}
 
 	@Override
 	public void descriptionChanged(String description) {
-		this.description = description;
+		reportViewModel.description = description;
 	}
 
 	public CharSequence getReportDescription() {
-		return description;
+		return reportViewModel.description;
+	}
+
+	@Override
+	public void postToTwitterChanged(boolean shouldPost) {
+		reportViewModel.postToTwitter = shouldPost;
+	}
+
+	@Override
+	public void postToFacebookChanged(boolean shouldPost) {
+		reportViewModel.postToFacebook = shouldPost;
+	}
+
+	public boolean getPostToTwitter() {
+		return reportViewModel.postToTwitter;
+	}
+	
+	public boolean getPostToFacebook() {
+		return reportViewModel.postToFacebook;
 	}
 }

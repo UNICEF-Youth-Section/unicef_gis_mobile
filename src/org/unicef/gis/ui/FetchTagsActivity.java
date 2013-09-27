@@ -1,4 +1,4 @@
-package org.unicef.gis;
+package org.unicef.gis.ui;
 
 import org.unicef.gis.R;
 import org.unicef.gis.infrastructure.Network;

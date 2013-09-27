@@ -1,4 +1,4 @@
-package org.unicef.gis;
+package org.unicef.gis.ui;
 
 import java.util.List;
 

@@ -48,12 +48,14 @@
         </LinearLayout>
 
         <CheckBox 
+            android:id="@+id/summary_post_to_facebook"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/share_on_facebook"
             />
         
         <CheckBox 
+            android:id="@+id/summary_post_to_twitter"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/share_on_twitter"

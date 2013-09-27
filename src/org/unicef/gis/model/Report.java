@@ -14,8 +14,6 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 import org.ektorp.support.OpenCouchDbDocument;
 
-import com.couchbase.cblite.CBLRevision;
-
 import android.location.Location;
 import android.net.Uri;
 
@@ -34,6 +32,8 @@ public class Report extends OpenCouchDbDocument {
 	public static final String SYNCED_IMAGE_KEY = "syncedImage";
 	public static final String TYPE_KEY = "type";
 	public static final String ATTEMPTS_KEY = "attempts";
+	public static final Object POST_TO_TWITTER_KEY = "postToTwitter";
+	public static final Object POST_TO_FACEBOOK_KEY = "postToFacebook";
 	
 	private static final long serialVersionUID = 1L;
 		
@@ -47,6 +47,9 @@ public class Report extends OpenCouchDbDocument {
 	private Boolean syncedImage;
 	private String type;
 	private Integer attempts;
+	
+	private Boolean postToTwitter;
+	private Boolean postToFacebook;
 	
 	public Report(String title, Location location, Uri imageUri, List<String> tags) {		
 		this(title, location.getLatitude(), location.getLongitude(), imageUri.toString(), tags);
@@ -64,6 +67,9 @@ public class Report extends OpenCouchDbDocument {
 		this.imageUri = imageUri.toString();
 		
 		this.timestamp = generateTimestamp();
+		
+		this.setPostToTwitter(false);
+		this.setPostToFacebook(false);
 		
 		setSyncedData(false);
 		setSyncedImage(false);
@@ -158,6 +164,8 @@ public class Report extends OpenCouchDbDocument {
 		Boolean syncedData = (Boolean) objReport.get(SYNCED_DATA_KEY);
 		Boolean syncedImage = (Boolean) objReport.get(SYNCED_IMAGE_KEY);
 		Integer attempts = (Integer) objReport.get(ATTEMPTS_KEY);
+		Boolean postToTwitter = (Boolean) objReport.get(POST_TO_TWITTER_KEY);
+		Boolean postToFacebook = (Boolean) objReport.get(POST_TO_FACEBOOK_KEY);
 		
 		Report report = new Report(plainTitle, plainLatitude, plainLongitude, imageUri, tags);		
 		report.setId((String) objReport.get(ID_KEY));
@@ -166,14 +174,12 @@ public class Report extends OpenCouchDbDocument {
 		report.setSyncedData(syncedData);
 		report.setSyncedImage(syncedImage);
 		report.setAttempts(attempts);
+		report.setPostToTwitter(postToTwitter);
+		report.setPostToFacebook(postToFacebook);
 		
 		return report;
 	}
-
-	public static Report fromRevision(CBLRevision documentWithIDAndRev) {		
-		return null;
-	}
-
+	
 	public Boolean getSyncedData() {
 		return syncedData;
 	}
@@ -209,5 +215,21 @@ public class Report extends OpenCouchDbDocument {
 	public String json() throws JsonGenerationException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();
 		return mapper.writeValueAsString(this);
+	}
+
+	public Boolean getPostToTwitter() {
+		return postToTwitter;
+	}
+
+	public void setPostToTwitter(Boolean postToTwitter) {
+		this.postToTwitter = postToTwitter;
+	}
+
+	public Boolean getPostToFacebook() {
+		return postToFacebook;
+	}
+
+	public void setPostToFacebook(Boolean postToFacebook) {
+		this.postToFacebook = postToFacebook;
 	}
 }

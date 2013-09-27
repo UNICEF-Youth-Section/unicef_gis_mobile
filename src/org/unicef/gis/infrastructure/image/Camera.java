@@ -139,7 +139,7 @@ public class Camera {
 		}
 	}
 
-	public Uri getUri(File imageFile) {
+	public static Uri getUri(File imageFile) {
 		return Uri.fromFile(imageFile);
 	}
 	

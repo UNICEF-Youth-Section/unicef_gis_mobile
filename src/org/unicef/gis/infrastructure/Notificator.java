@@ -1,7 +1,7 @@
 package org.unicef.gis.infrastructure;
 
-import org.unicef.gis.MyReportsActivity;
 import org.unicef.gis.model.Report;
+import org.unicef.gis.ui.MyReportsActivity;
 
 import android.app.NotificationManager;
 import android.app.PendingIntent;
