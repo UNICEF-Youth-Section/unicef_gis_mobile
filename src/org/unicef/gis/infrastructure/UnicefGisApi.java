@@ -124,9 +124,15 @@ public class UnicefGisApi {
 			
 			boolean requestSucceeded = conn.getResponseCode() == HttpURLConnection.HTTP_OK;
 			if (!requestSucceeded) {
+
+				Log.d("SyncAdapter", "Tags request failed with Http Code: " + conn.getResponseCode());
+				
 				handleRequestFailure(conn);
 			} else {
 				String response = StreamUtils.inputStreamToString(new BufferedInputStream(responseStream));
+				
+				Log.d("SyncAdapter", "Tags downloaded from server: " + response);
+				
 				return new JSONArray(response);
 			}
 		} catch (Exception e) {

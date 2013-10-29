@@ -17,6 +17,8 @@ public class BitmapWorkerTask extends AsyncTask<Uri, Void, Bitmap> {
 	private Uri file;
 	private final int scale;
 	
+	private Bitmap thumbnailPlaceholder = null;
+	
 	public BitmapWorkerTask(Camera camera, int scale, ImageView imageView) { 
 		this.imageViewReference = new WeakReference<ImageView>(imageView);
 		this.camera = camera;
@@ -29,13 +31,30 @@ public class BitmapWorkerTask extends AsyncTask<Uri, Void, Bitmap> {
 		String plainUri = file.toString();
 		
 		updateThumbnailCache(plainUri);					
+				
+		return thumbnailOrPlaceholder(plainUri);
+	}
+	
+	private Bitmap thumbnailOrPlaceholder(String plainUri) {
+		Bitmap thumbnail = cachedThumbnails.get(plainUri);
 		
-		return cachedThumbnails.get(plainUri);
+		if (thumbnail == null) {
+			if (thumbnailPlaceholder == null)
+				thumbnailPlaceholder = camera.getPlaceholder();
+			
+			thumbnail = thumbnailPlaceholder;
+		}
+			
+		return thumbnail;
 	}
 
 	private synchronized void updateThumbnailCache(String plainUri) {
-		if (!cachedThumbnails.containsKey(plainUri))
-			cachedThumbnails.put(plainUri, camera.getThumbnail(file, scale));
+		if (!cachedThumbnails.containsKey(plainUri)) {
+			Bitmap thumbnail = camera.getThumbnail(file, scale);
+			
+			if (thumbnail != null)
+				cachedThumbnails.put(plainUri, thumbnail);			
+		}			
 	}
 	
 	@Override

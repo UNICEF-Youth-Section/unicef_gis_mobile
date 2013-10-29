@@ -84,7 +84,7 @@
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
                 android:text="@string/searching_location"
-                android:textSize="20sp" />
+                android:textSize="16sp" />
         </LinearLayout>        
         
         <Button

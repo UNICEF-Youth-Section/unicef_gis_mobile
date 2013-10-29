@@ -90,7 +90,7 @@ public class ReportRowAdapter extends ArrayAdapter<Report> {
 		if (cancelPotentialWork(thumbnailView, imageUri)) {
 			final BitmapWorkerTask task = new BitmapWorkerTask(camera,
 					THUMBNAIL_TO_SCREEN_FACTOR, thumbnailView);
-			final AsyncDrawable asyncDrawable = new AsyncDrawable(Resources.getSystem(), Camera.PLACEHOLDER, task);
+			final AsyncDrawable asyncDrawable = new AsyncDrawable(Resources.getSystem(), camera.getPlaceholder(), task);
 			thumbnailView.setImageDrawable(asyncDrawable);
 			task.execute(imageUri);
 		}

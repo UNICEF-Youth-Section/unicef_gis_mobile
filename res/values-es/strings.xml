@@ -1,4 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
-    
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Voices of Youth Maps</string>
+    <string name="edit_email">Email</string>
+    <string name="edit_password">Contraseña</string>
+    <string name="button_login">Iniciar sesión</string>
+    <string name="action_settings">Configuración</string>
+    <string name="title_activity_login">LoginActivity</string>
+    <string name="title_activity_display_message">Credenciales de inicio de sesión</string>
+    <string name="hello_world">Hola mundo!</string>
+	<string name="enter_email">Ingresa un email válido</string>
+	<string name="enter_password">Ingresa una contraseña</string>
+	<string name="authenticating">Autenticando&#8230;</string>
+	<string name="please_enter_valid_email_and_password">Ingresa un email y una contraseña válidos</string>
+	<string name="default_api_url">http://buenosaires.unicef-gis.org/api/</string>
+	<string name="title_activity_configure_server_url">Activación de UNICEF-GIS</string>
+	<string name="title_activity_fetch_tags">Configurando UNICEF-GIS&#8230;</string>
+	<string name="welcome">Elige a cuál mapa digital de UNICEF-GIS enviarás los reportes que crees (por ejemplo: rio.unicef-gis.org, nyhq.unicef-gis.org, etc.). \n\nSólo tendrás que hacerlo esta vez.</string>
+	<string name="example_url">mycity.unicef-gis.org</string>
+	<string name="save_address">Guardar dirección</string>
+	<string name="wait_configuring">Espera mientras configuramos a UNICEF GIS</string>
+	<string name="fetch_tags_not_connected">Al parecer no estás conectado a Internet en este momento. \n\nUNICEF-GIS necesita que conectes tu celular a Internet para terminar de configurarse.\n\nPara completar la configuración, vuelve a abrir UNICEF-GIS cuando tu celular tenga conexión.</string>
+	<string name="go_to_network_settings">Edita tus configuraciones de conexión a Internet</string>
+	<string name="retry">Reintentar</string>
+	<string name="something_wrong_fetching_tags">Algo falló mientras configurábamos UNICEF-GIS. Esto puede deberse a que la conexión a Internet actualmente es inestable. Toca \'Reintentar\' si crees que tu conexión funciona normalmente. </string>
+	<string name="no_reports">Aún no has creado reportes</string>
+	<string name="new_report">CREAR REPORTE</string>
+	<string name="tag_your_report">Califica tu reporte</string>
+	<string name="back">Atrás</string>
+	<string name="next">SIGUIENTE</string>
+	<string name="cancel" tools:ignore="ButtonCase">CANCELAR</string>
+	<string name="done">GUARDAR</string>
+	<string name="report_title">Título del reporte&#8230;</string>
+	<string name="report_picture">Foto</string>
+	<string name="save_report">Guardar reporte</string>
+	<string name="report_tags">Etiquetas</string>
+	<string name="no_tags_chosen">No se seleccionaron etiquetas</string>
+	<string name="searching_location">Obteniendo ubicación&#8230;</string>
+	<string name="description_missing">Título requerido</string>
+	<string name="description_missing_prompt">Por favor ingresa un título para tu reporte.</string>
+	<string name="location_missing">Espera a que obtengamos tu ubicación actual</string>
+	<string name="location_missing_prompt">Por favor espera a que obtengamos tu ubicación actual.</string>
+	<string name="configuration_problem">Problema de configuración</string>
+	<string name="configuration_problem_prompt">UNICEF-GIS no puede sacar fotos. Esto se debe a algún inconvenient en la configuración de tu teléfono. Por favor, contacta a un administrador de UNICEF-GIS para que te ayude a resolver el problema.</string>
+	<string name="wait">Espera</string>
+	<string name="take_picture">SACAR FOTO</string>
+	<string name="share_on_facebook">Compartir en Facebook</string>
+	<string name="share_on_twitter">Compartir en Twitter</string>
+	<string name="saving_report">Guardando reporte&#8230;</string>
+	<string name="action_preferences">Prefrencias</string>
+	<string name="saving_account_details">Guardando detalles de cuenta&#8230;</string>
 </resources>

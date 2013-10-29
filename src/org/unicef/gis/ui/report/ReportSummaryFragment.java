@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unicef.gis.R;
+import org.unicef.gis.infrastructure.CompileTimeSettings;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -25,6 +26,8 @@ import android.widget.TextView;
 
 public class ReportSummaryFragment extends Fragment implements TextWatcher {
 	private IReportSummaryCallbacks callbacks = null;
+	
+	private static final int SOCIAL_CONTROLS_VISIBILITY = CompileTimeSettings.SUPPORT_SOCIAL ? View.VISIBLE : View.INVISIBLE; 
 	
 	private View view;
 	private ImageView imageView;
@@ -127,7 +130,8 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				notifyPostToTwitterChange(isChecked);
 			}
-		});
+		});				
+		postToTwitterCheckbox.setVisibility(SOCIAL_CONTROLS_VISIBILITY);
 		
 		postToFacebookCheckbox = (CheckBox) view.findViewById(R.id.summary_post_to_facebook);
 		postToFacebookCheckbox.setOnCheckedChangeListener(new OnCheckedChangeListener() {
@@ -135,6 +139,7 @@ public class ReportSummaryFragment extends Fragment implements TextWatcher {
 				notifyPostToFacebookChange(isChecked);
 			}
 		});
+		postToFacebookCheckbox.setVisibility(SOCIAL_CONTROLS_VISIBILITY);	
 	}
 
 	private void setupImage() {

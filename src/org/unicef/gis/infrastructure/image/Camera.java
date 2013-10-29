@@ -14,7 +14,6 @@ import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -25,10 +24,7 @@ import android.provider.MediaStore;
 import android.util.Log;
 
 public class Camera {
-	public static final Bitmap PLACEHOLDER;
-	static {
-		PLACEHOLDER = loadPlaceholder();
-	}	  
+	private static Bitmap PLACEHOLDER = null;  
 	
 	public static final int TAKE_PICTURE_INTENT = 10;
 	
@@ -42,9 +38,17 @@ public class Camera {
 		this.context = context;
 	}
 	
-	private static Bitmap loadPlaceholder() {
-		return BitmapFactory.decodeResource(Resources.getSystem(), R.drawable.content_picture);
+	private Bitmap loadPlaceholder() {
+		return BitmapFactory.decodeResource(context.getResources(), R.drawable.content_picture);
 	}
+	
+	public Bitmap getPlaceholder() {
+		if (PLACEHOLDER == null)
+			PLACEHOLDER = loadPlaceholder();
+		
+		return PLACEHOLDER;
+	}
+	
 
 	public File takePicture() throws IOException {
 		File f = createImageFile();
@@ -101,6 +105,11 @@ public class Camera {
 		options.inSampleSize = scaleFactor;
 	    
 		Bitmap originalBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
+		
+		//Image was deleted from storage. Maybe we should launch an exception here. 
+		if (originalBitmap == null)
+			return null;
+		
 		return tryToRotate(imageFile, originalBitmap);
 	}
 	
