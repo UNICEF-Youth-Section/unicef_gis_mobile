@@ -163,6 +163,9 @@ public class Camera {
 		
 		Bitmap originalBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
 		
+		if (originalBitmap == null)
+			return null;
+		
 		ExifInterface exif;
 		try {
 			exif = new ExifInterface(imageFile.getAbsolutePath());

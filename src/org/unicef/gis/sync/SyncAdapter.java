@@ -143,6 +143,16 @@ public class SyncAdapter extends AbstractThreadedSyncAdapter {
 
 		File image = camera.rotateImageIfNecessary(report.getImageUri());
 
+		//For some reason, the image is not currently available (it maybe missing altogether). 
+		//In this case, we increment the "attempts" counter to give it a chance to eventually upload 
+		//provided the issue is circumstantial.
+		//This policy would play nice if in the future we decide to mark reports as failed upon reaching a 
+		//number of attempts.
+		if (image == null) {			
+			markAsNotSyncd(report);
+			return;
+		}
+		
 		int status = 0;
 		try {
 			String json = report.json();
