@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.unicef.gis.infrastructure.RoutesResolver;
+import org.unicef.gis.infrastructure.image.Camera;
 import org.unicef.gis.model.Report;
 import org.unicef.gis.model.Tag;
 import org.unicef.gis.ui.report.ReportViewModel;
@@ -42,9 +43,26 @@ public class UnicefGisStore {
 				viewModel.postToFacebook);			
 	}
 	
+	public void deleteReport(Report report) {
+		//Delete images		
+		String imageUri = report.getImageUri();
+		
+		Camera camera = new Camera(context);
+		camera.deleteOriginalAndRotatedImage(imageUri);
+		
+		//Delete the report itself
+		CouchDbLiteStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
+		adapter.deleteReport(report);
+	}	
+	
 	public List<Report> getReports() {
 		CouchDbLiteStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
 		return adapter.getReports();
+	}
+	
+	public List<Report> getUploadedReports() {
+		CouchDbLiteStoreAdapter adapter = new CouchDbLiteStoreAdapter(context);
+		return adapter.getUploadedReports();
 	}
 
 	public void saveTags(List<Tag> tags) {
@@ -101,5 +119,5 @@ public class UnicefGisStore {
 			prefsEditor.putBoolean(key, (Boolean) value);
 
 		prefsEditor.commit();
-	}	
+	}
 }

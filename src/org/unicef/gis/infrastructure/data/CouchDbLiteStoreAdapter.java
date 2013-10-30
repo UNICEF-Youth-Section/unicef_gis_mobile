@@ -8,6 +8,7 @@ import org.ektorp.impl.StdCouchDbInstance;
 import org.unicef.gis.model.Report;
 import org.unicef.gis.model.couchdb.views.AllReportsByTimestampDesc;
 import org.unicef.gis.model.couchdb.views.PendingSyncReports;
+import org.unicef.gis.model.couchdb.views.UploadedReports;
 
 import android.content.Context;
 import android.location.Location;
@@ -32,6 +33,7 @@ public class CouchDbLiteStoreAdapter {
 	
 	private static AllReportsByTimestampDesc allReports;
 	private static PendingSyncReports pendingSyncReports;
+	private static UploadedReports uploadedReports;
 		
 	public CouchDbLiteStoreAdapter(Context context) {
 		if (couchDbServer == null) {
@@ -44,6 +46,7 @@ public class CouchDbLiteStoreAdapter {
 				
 				allReports = new AllReportsByTimestampDesc(db, DESIGN_DOC_NAME);
 				pendingSyncReports = new PendingSyncReports(db, DESIGN_DOC_NAME);
+				uploadedReports = new UploadedReports(db, DESIGN_DOC_NAME);
 			} catch (IOException e) {
 				Log.e("UnicefGisStore", "Error starting TDServer", e);
 			}
@@ -62,6 +65,10 @@ public class CouchDbLiteStoreAdapter {
 	public void updateReport(Report report) {
 		ektorp().update(report);
 	}
+	
+	public void deleteReport(Report report) {
+		ektorp().delete(report.getId(), report.getRevision());
+	}
 
 	public List<Report> getReports() {			
 		return Report.collectionFromMap(allReports.query());
@@ -70,6 +77,10 @@ public class CouchDbLiteStoreAdapter {
 	public List<Report> getPendingSyncReports() {		
 		return Report.collectionFromMap(pendingSyncReports.query());
 	}	
+	
+	public List<Report> getUploadedReports() {
+		return Report.collectionFromMap(uploadedReports.query());
+	}
 	
 	private CouchDbConnector ektorp() {
 		if (conn == null)

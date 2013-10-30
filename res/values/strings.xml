@@ -49,4 +49,15 @@
 	<string name="saving_report">Saving report&#8230;</string>
 	<string name="action_preferences">Preferences</string>
 	<string name="saving_account_details">Saving account details&#8230;</string>
+	<string name="delete_uploaded">Delete uploaded reports</string>
+	<string name="delete_uploaded_message">If you confirm, all reports which have already been uploaded to a UNICEF GIS website will be removed from your cellphone. You will still be able to see them at the website.</string>
+	<string name="delete_uploaded_confirm">Delete reports</string>
+	<string name="delete_uploaded_cancel">Cancel</string>
+	<string name="deleting_reports">Deleting reports</string>
+	<string name="please_wait_deleting_reports">Please wait while the app deletes uploaded reports from your phone&#8230;</string>
+	<plurals name="deleted_reports">
+        <item quantity="one">Successfully deleted one report</item>
+        <item quantity="few">Successfully deleted %d reports</item>
+        <item quantity="other">There were no reports to delete</item>
+    </plurals>
 </resources>

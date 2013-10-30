@@ -182,7 +182,7 @@ public class Camera {
 		
 		Bitmap rotatedBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.getWidth(), originalBitmap.getHeight(), matrix, true);
 		
-		String rotatedFileName = imageFile.getParent() + "/rotated-" + imageFile.getName();
+		String rotatedFileName = rotatedFileNameFromOriginal(imageFile);
 		
 		File rotated = null;
 		FileOutputStream out = null;
@@ -215,5 +215,24 @@ public class Camera {
 		}
 		
 		return new File(rotatedFileName);
+	}
+
+	public void deleteOriginalAndRotatedImage(String imageUri) {
+		//Delete original image (if it's still there)
+		File originalImage = fileFromString(imageUri);
+		deleteIfExists(originalImage);
+		
+		//Delete rotated image (if it's still there)
+		File rotatedImage = fileFromString(rotatedFileNameFromOriginal(originalImage));
+		deleteIfExists(rotatedImage);
+	}
+	
+	private String rotatedFileNameFromOriginal(File file) {
+		return file.getParent() + "/rotated-" + file.getName();
+	}
+
+	private void deleteIfExists(File file) {
+		if (file.exists())
+			file.delete();
 	}
 }

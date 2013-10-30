@@ -18,12 +18,16 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.accounts.AccountManagerCallback;
 import android.accounts.AccountManagerFuture;
+import android.app.AlertDialog;
 import android.app.ListActivity;
 import android.app.LoaderManager;
 import android.app.LoaderManager.LoaderCallbacks;
+import android.app.ProgressDialog;
 import android.content.ContentResolver;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -32,6 +36,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.couchbase.cblite.router.CBLURLStreamHandlerFactory;
 
@@ -55,6 +60,8 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 	private AccountManager accountManager = null;
 
 	private Timer timer;
+	
+	private ProgressDialog deleteReportsProgressDialog = null;
 			
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -81,10 +88,52 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
-		openPreferences();
+		if (item.getItemId() == R.id.delete_uploaded) {
+			showDeleteReportsDialog();
+		} else {
+			openPreferences();
+		}
+		
 		return true;
 	}
 	
+	private void showDeleteReportsDialog() {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+
+		builder.setMessage(R.string.delete_uploaded_message)
+		       .setTitle(R.string.delete_uploaded);
+		
+		builder.setPositiveButton(R.string.delete_uploaded_confirm, new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int id) {
+				showDeleteReportsProgressDialog();
+				
+			}
+		});
+		
+		builder.setNegativeButton(R.string.delete_uploaded_cancel, new DialogInterface.OnClickListener() {
+	       public void onClick(DialogInterface dialog, int id) {}
+		});
+		
+		AlertDialog dialog = builder.create();
+		dialog.show();
+	}
+	
+	private void showDeleteReportsProgressDialog() {	
+		deleteReportsProgressDialog = new ProgressDialog(this);
+		
+		deleteReportsProgressDialog.setTitle(R.string.deleting_reports);
+		deleteReportsProgressDialog.setMessage(getResources().getString(R.string.please_wait_deleting_reports));
+		deleteReportsProgressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+		
+		deleteReportsProgressDialog.setProgress(0);
+		deleteReportsProgressDialog.setMax(20);		
+		
+		deleteReportsProgressDialog.show();
+		
+		DeleteUploadedReportsTask task = new DeleteUploadedReportsTask(this);
+		task.execute();
+	}
+
 	private void openPreferences() {
 		startActivity(new Intent(this, SettingsActivity.class));
 	}
@@ -238,5 +287,26 @@ public class MyReportsActivity extends ListActivity implements LoaderCallbacks<L
 	@Override
 	public void run(AccountManagerFuture<Bundle> arg0) {
 		setupAccount();
+	}
+
+	public void reportProgress() {
+		if (deleteReportsProgressDialog != null) {
+			deleteReportsProgressDialog.incrementProgressBy(1);
+		}
+	}
+
+	public void informReportsToDelete(Integer totalReportsToDelete) {
+		if (deleteReportsProgressDialog != null) {
+			deleteReportsProgressDialog.setMax(totalReportsToDelete);
+		}
+	}
+
+	public void reportsDeleted() {
+		if (deleteReportsProgressDialog != null) {
+			deleteReportsProgressDialog.dismiss();
+			deleteReportsProgressDialog = null;
+		}
+		
+		refreshData();
 	}
 }
