@@ -3,6 +3,7 @@ package org.unicef.gis.ui;
 import java.util.List;
 
 import org.unicef.gis.infrastructure.data.UnicefGisStore;
+import org.unicef.gis.infrastructure.image.Camera;
 import org.unicef.gis.model.Report;
 
 import android.os.AsyncTask;
@@ -30,6 +31,10 @@ public class DeleteUploadedReportsTask extends AsyncTask<Void, Integer, Void> {
 			store.deleteReport(report);
 			publishProgress(amountOfReportsToDelete, 1);
 		}
+		
+		//Ensure that the phone's media gallery reflects the changes immediately
+		Camera camera = new Camera(activity);
+		camera.rescanMedia();
 		
 		return null;
 	}

@@ -78,6 +78,20 @@ public class Camera {
 	    ((Activity)context).sendBroadcast(mediaScanIntent);
 	}
 	
+
+	/***
+	 * Causes the system to rescan storage looking for changes in media,
+	 * so that the media galleries reflect the most up to date state. 
+	 * For example, if the user deleted reports and we didn't rescan the system,
+	 * the pics would be gone from storage but the photo gallery would still show
+	 * black placeholders where the deleted pics used to be until the next time the
+	 * cellphone is turned off and on. 
+	 * By calling this after removing pics, the gallery is kept in sync. 
+	 */
+	public void rescanMedia() {
+		context.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED, Uri.parse("file://" + Environment.getExternalStorageDirectory())));
+	}
+	
 	@SuppressLint("SimpleDateFormat")
 	private File createImageFile() throws IOException {		
 	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
