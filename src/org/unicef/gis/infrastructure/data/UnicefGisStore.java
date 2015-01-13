@@ -69,6 +69,10 @@ public class UnicefGisStore {
 		StringBuffer sb = new StringBuffer();
 		boolean first = true;
 		
+		if(tags == null) {
+			tags = new ArrayList<Tag>(0);
+		}
+		
 		for (Tag tag : tags) {
 			if (!first) sb.append(","); 			
 			first = false;
