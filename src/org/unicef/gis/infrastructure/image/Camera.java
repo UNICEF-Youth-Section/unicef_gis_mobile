@@ -1,13 +1,11 @@
 package org.unicef.gis.infrastructure.image;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.apache.commons.io.FileUtils;
 import org.unicef.gis.R;
 
 import android.annotation.SuppressLint;
@@ -167,18 +165,16 @@ public class Camera {
 	}
 	
 	public File rotateImageIfNecessary(String imageUri) {
+		/*
+		 * Due to a bug in certain phone's brands that caused the images to be corrupted after rotation,
+		 * we're rotating the images server side.
+		 * 
+		 * The uploaded picture's name will tell the server which rotation to apply, coded in the filename:
+		 * rotate0, rotate90, rotate180 and rotate270
+		 */
 		Log.d("Camera", "Rotating image" + imageUri);
 		
 		File imageFile = fileFromString(imageUri);
-		
-		BitmapFactory.Options options = new BitmapFactory.Options();
-		options.inJustDecodeBounds = false;		
-		options.inSampleSize = 1;
-		
-		Bitmap originalBitmap = BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
-		
-		if (originalBitmap == null)
-			return null;
 		
 		ExifInterface exif;
 		try {
@@ -191,44 +187,18 @@ public class Camera {
 		
 		int orientation = exif.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL);
 		
-		Matrix matrix = new Matrix();
-		matrix.postRotate(exifOrientationToDegrees(orientation));
+		String newFilename = "rotate" + Float.valueOf(exifOrientationToDegrees(orientation)).intValue() + "-" + imageFile.getName();
+		File destFile = new File(imageFile.getParentFile(), newFilename);
 		
-		Bitmap rotatedBitmap = Bitmap.createBitmap(originalBitmap, 0, 0, originalBitmap.getWidth(), originalBitmap.getHeight(), matrix, true);
-		
-		String rotatedFileName = rotatedFileNameFromOriginal(imageFile);
-		
-		File rotated = null;
-		FileOutputStream out = null;
-		ByteArrayOutputStream bytes = new ByteArrayOutputStream();
 		try {
-			rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-			rotated = new File(rotatedFileName);
-			rotated.createNewFile();
-			
-			out = new FileOutputStream(rotated);
-			out.write(bytes.toByteArray());			
-		} catch (FileNotFoundException e) {		
+			FileUtils.copyFile(imageFile, destFile);
+		} catch (IOException e) {
 			e.printStackTrace();
 			Log.d("Camera", "Couldn't save rotated image, settling with original image.");
 			return imageFile;
-		} catch (IOException e) {
-			e.printStackTrace();	
-			Log.d("Camera", "Couldn't save rotated image, settling with original image.");
-			return imageFile;
-		} finally {
-			if (out != null){
-				try {
-					out.close();
-				} catch (IOException e) {
-					e.printStackTrace();
-					Log.d("Camera", "Couldn't save rotated image, settling with original image.");
-					return imageFile;
-				}
-			}
 		}
 		
-		return new File(rotatedFileName);
+		return destFile;
 	}
 
 	public void deleteOriginalAndRotatedImage(String imageUri) {
