@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
+    <LinearLayout
+        android:id="@+id/choose_tags_bottom_border"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:layout_height="1dp"
+        android:layout_width="match_parent"
+        android:background="#2697CC"
+        >
+    </LinearLayout>
+    <LinearLayout
+        android:id="@+id/choose_tags_button_bar"        
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="?android:attr/buttonBarStyle"
+        android:layout_above="@id/choose_tags_bottom_border"
+        >
+        
+        <Button
+            android:layout_weight="1"
+	 	    android:layout_width="0dp"
+	        android:layout_height="wrap_content" 
+	        android:id="@+id/choose_tags_next"
+	        android:onClick="onTagsChosen"
+	        style="?android:attr/buttonBarButtonStyle"
+	        />
+    </LinearLayout>
+    
+    <GridView 
+	    android:layout_width="fill_parent"
+	    android:layout_height="fill_parent" 
+	    android:id="@+id/choose_tags_gridview"
+	    android:columnWidth="90dp"
+	    android:numColumns="auto_fit"
+	    android:verticalSpacing="10dp"
+	    android:horizontalSpacing="10dp"
+	    android:stretchMode="columnWidth"
+	    android:gravity="center"
+	    android:paddingTop="50dp"
+	    android:layout_above="@id/choose_tags_button_bar"
+	     />
+    
+    <ProgressBar 
+		android:id="@+id/choose_tags_progress"
+		android:indeterminateOnly="true"
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:layout_margin="10dp"
+		android:layout_gravity="center_vertical"
+		android:visibility="gone"
+		/>
+</RelativeLayout>
+

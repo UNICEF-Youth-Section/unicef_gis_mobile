@@ -1,0 +1,71 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 23
+    buildToolsVersion "23.0.2"
+    useLibrary 'org.apache.http.legacy'
+
+    defaultConfig {
+        applicationId "org.unicef.gis"
+        minSdkVersion 14
+        targetSdkVersion 18
+        multiDexEnabled true
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+
+    packagingOptions {
+        exclude 'META-INF/DEPENDENCIES.txt'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/notice.txt'
+        exclude 'META-INF/license.txt'
+        exclude 'META-INF/dependencies.txt'
+        exclude 'META-INF/LGPL2.1'
+        exclude 'META-INF/ASL2.0'
+    }
+}
+
+dependencies {
+    compile 'com.android.support:support-v4:23.0.0'
+//    compile 'com.google.android.gms:play-services:8.4.0'
+    compile 'com.google.android.gms:play-services-base:8.4.0'
+    compile 'com.google.android.gms:play-services-location:8.4.0'
+    compile 'com.couchbase.lite:couchbase-lite-android:1.2.0'
+    compile files('libs/commons-io-2.0.1.jar')
+    compile 'com.android.support:multidex:1.0.0'
+//    compile files('libs/CBLite-1.0.0-beta.jar')
+//    compile files('libs/jackson-core-asl-1.9.2.jar')
+//    compile files('libs/jackson-mapper-asl-1.9.2.jar')
+//    compile files('libs/org.ektorp-1.2.2.jar')
+//    compile files('libs/org.ektorp.android-1.2.2.jar')
+//    compile files('libs/servlet-api-2.4.jar')
+//    compile files('libs/slf4j-android-1.6.1-RC1.jar')
+
+
+
+//    compile files('libs/couchbase-lite-java-core-1.2.0.jar')
+//    compile files('libs/couchbase-lite-java-javascript-1.2.0.jar')
+//    compile files('libs/couchbase-lite-java-listener-1.2.0.jar')
+//    compile files('libs/jackson-core-2.5.0.jar')
+//    compile files('libs/jackson-databind-2.5.0.jar')
+//    compile files('libs/jackson-core-2.5.0.jar')
+//    compile files('libs/rhino-1.7R3.jar')
+//    compile files('libs/servlet-2-3.jar')
+//    compile files('libs/stateless4j-2.4.0.jar')
+//    compile files('libs/webserver-2-3.jar')
+//    compile files('libs/jackson-annotations-2.5.0.jar')
+//    compile files('libs/couchbase-lite-android-1.2.0.aar')
+//    compile files('libs/couchbase-lite-android-forestdb-1.2.0.aar')
+//    compile files('libs/couchbase-lite-android-sqlcipher-1.2.0.aar')
+//    compile files('libs/couchbase-lite-android-sqlite-custom-1.2.0.aar')
+//    compile files('libs/couchbase-lite-android-sqlite-default-1.2.0.aar')
+}

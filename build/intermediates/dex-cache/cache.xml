@@ -1,0 +1,264 @@
+<?xml version="1.0" encoding="utf-8"?>
+<items version="2" >
+
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-cast/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="551e78f21acf69ebfb489c0e79647824c838013e">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-cast-8.4.0_cc75fad4e1c4663548d752904f9a2860393b93c7.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-maps/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="04de44f90606c77f3b28cf44861f306290505aac">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-maps-8.4.0_9b4e6d5be4c0ae3ac00c332f53c789830775984f.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-wearable/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="e167a34eaca0b31704212f43f9576ea84e05046f">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-wearable-8.4.0_88102f51a1cf6a02fa87955c7ea96902075e7087.jar" />
+    </item>
+    <item
+        jar="/Users/vale/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.5.0/489b7552dd3322b63f694122d16ce62c21c303b5/jackson-databind-2.5.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="489b7552dd3322b63f694122d16ce62c21c303b5">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/jackson-databind-2.5.0_c35f4af0c7ac23fa9e10a65e68e02ba9b9ca8449.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-plus/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="1a78298e7724d5440d210bcb946b3493250d354d">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-plus-8.4.0_a69719eb9a1be7b69be676622ccdbc4ee6ec0a71.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-appindexing/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="65d086ee9daaf87b5af62ad24471edafa433354c">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-appindexing-8.4.0_9a26d0bfef2dac72b4084ab86bcbdc3caf271914.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-games/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="3a364cc6b698d1b3b2d284f64618daaa7fe77ddf">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-games-8.4.0_d4c603464364ac3bcb0f4aa95ba82688f556d02c.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/libs/commons-io-2.0.1.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="7ffdb02f95af1c1a208544e076cea5b8e66e731a">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/commons-io-2.0.1_1b1a763eef9cfb5ca9e09a4c84f40ea4d01040c6.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/23.0.0/jars/libs/internal_impl-23.0.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="03d38bb042efe3e5ce27ba66b729a9523c36d8fe">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/internal_impl-23.0.0_5c48aad1aea311be4ff343b1c9662b1084c990bb.jar" />
+    </item>
+    <item
+        jar="/Users/vale/.gradle/caches/modules-2/files-2.1/com.github.oxo42/stateless4j/2.4.0/128aca4ace585f0b42faa739d0b968a154debb7a/stateless4j-2.4.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="128aca4ace585f0b42faa739d0b968a154debb7a">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/stateless4j-2.4.0_4ce93b61c83f06b87acf9eda366bb0186b61c021.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-ads/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="b5e7892fb0708e792e0e933c4c0a0ca0ac7831fb">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-ads-8.4.0_75ce97f04f4a025c1d741a23f5733bd6deb2b27f.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-gcm/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="2d7fe76982677315c4dc4edfb459c8ca718a9d4c">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-gcm-8.4.0_be4ed624c514e10359d7095f1bb338239af9d299.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-panorama/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="08d34b2d135c1cc96ab506fd8bf6916d1e2f391a">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-panorama-8.4.0_b2e51bf78b1e5305289320adc77f90de082e9dba.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-safetynet/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="0194a7409c40de94fb539d4ad9928ec5d47afeb7">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-safetynet-8.4.0_82f91d8c9ffa49310c8e31eaf62049742470f7cb.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-drive/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="b36f30ac5ee5d5214f4b1e2ac49f11889d58e71a">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-drive-8.4.0_1a921581f6e51420404bf944f69c2f37dcab4a25.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-auth/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="966e5771a5a2ebfb31bf00d7cd6cd2546d245517">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-auth-8.4.0_63fd16d0e1b1f0d0957c5fca0ffb97cb4f542138.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="fef2b3e4b6b1b0e5fe7b69fa137a5fa55a3182ab">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-base-8.4.0_083f9902f7fab37ec50a0ecfa48e42d213917b49.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.0/jars/libs/internal_impl-23.0.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8bd336eeae661e8311330284897ee07f8ebaa297">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/internal_impl-23.0.0_2fd7b76f1c7b752f2dd774401c1a5c3656325931.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.couchbase.lite/couchbase-lite-android-sqlite-default/1.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="1cf04becb19a33df40b9bf3e65543951e6ece535">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.couchbase.lite-couchbase-lite-android-sqlite-default-1.2.0_874b23f71af254076e1c8173e9be184f90ae3a00.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.couchbase.lite/couchbase-lite-android/1.2.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="b79545f647cb3062f38f47ec52131624d3030910">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.couchbase.lite-couchbase-lite-android-1.2.0_95bd81c43b3eb8803fdb2314fc759feee86f6e1c.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.android.support/appcompat-v7/23.0.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="4fcf0b1879f8caf497c073e1432d398e9e2988c1">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.android.support-appcompat-v7-23.0.0_c2a3bb4ce90e9acec1150c4b18b048c917338f59.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-fitness/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="c54246475c1bb64ac6857d1320364bfbfeda2c46">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-fitness-8.4.0_ab77c1ee805458f3e996b54de85c59e8977c26fc.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.android.support/support-v4/23.0.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8413c27b45b7fe61dca4a98159f65e2cee215f5a">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.android.support-support-v4-23.0.0_b50b47014d77833085f2668fb58000005012d787.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-vision/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="dfecc4d835cdabcdecf7e95f0d20a3ef1e9d8ef4">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-vision-8.4.0_137a86d790b623af3909c7763240c868236a0406.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.android.support/mediarouter-v7/23.0.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="d358b3dd49a7c67844622dcbc9cf4339e13952ce">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.android.support-mediarouter-v7-23.0.0_f3e67b39875e70ccf77cf9089f6775457e3bfc97.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-analytics/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="1c9f35e952b212c843f7bd2c7eec8e82ad95602e">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-analytics-8.4.0_6f372e3d10f444a0d1f2ab8b29b1edb6ed221f9c.jar" />
+    </item>
+    <item
+        jar="/Users/vale/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.5.0/a2a55a3375bc1cef830ca426d68d2ea22961190e/jackson-annotations-2.5.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a2a55a3375bc1cef830ca426d68d2ea22961190e">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/jackson-annotations-2.5.0_ea9dbf2eefcad35c0505f748a80b1b2ef9e8efa7.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-wallet/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="f2df436a8f02ce7e4d7d209671fc45f97c470f0e">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-wallet-8.4.0_64921e3bc73f2dcd628330aa4299f21e22b34041.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-nearby/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="9cad249cf62751a323d9af568caf12284b7d6062">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-nearby-8.4.0_37b378b3276c366da0a8b39fe4c2709b7093dae5.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-basement/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="8e673cdfadd8f2d98fdb2fda2285c30f6e449782">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-basement-8.4.0_c5fd513b83d06bcc0d97f0b88122ac2e4399cb06.jar" />
+    </item>
+    <item
+        jar="/Users/vale/.gradle/caches/modules-2/files-2.1/com.couchbase.lite/couchbase-lite-java-core/1.2.0/99dc948a96094004498edf57f2ce044add1d9e9c/couchbase-lite-java-core-1.2.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="99dc948a96094004498edf57f2ce044add1d9e9c">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/couchbase-lite-java-core-1.2.0_73c370843ef4f8c5c28ebe37a0fbfe3ee9940b6d.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Library/Android/sdk/extras/android/m2repository/com/android/support/support-annotations/23.0.0/support-annotations-23.0.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="990e7f98a7bad86a40b1f0bcfeb039023afd0839">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/support-annotations-23.0.0_eee47227c1e825dae1c84bd3d7fe244b11664f2c.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-identity/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="b82b8e847173c28efffcd291b2a0b1ae9ad17fa4">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-identity-8.4.0_e444c6d74623e03088e82448938a30a067d8f3ac.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-appinvite/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="9fe026fb4c7fce21bc5142f6e1bdf844f28061ac">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-appinvite-8.4.0_6ae77ab219fbe7764380746aa8ea4d441b02768c.jar" />
+    </item>
+    <item
+        jar="/Users/vale/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.5.0/b2ece1bd57ac7b4c315b7505b65ac79cb1da4270/jackson-core-2.5.0.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="b2ece1bd57ac7b4c315b7505b65ac79cb1da4270">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/jackson-core-2.5.0_6c9b62b2bc478c24a4e305535374fd70dde4f968.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-location/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="a8412b654dab86d57bf90683367488211c8a81f1">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-location-8.4.0_a3b330ec6a36a97ac5702299d69b4771d9d70579.jar" />
+    </item>
+    <item
+        jar="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/exploded-aar/com.google.android.gms/play-services-measurement/8.4.0/jars/classes.jar"
+        jumboMode="false"
+        revision="23.0.2"
+        sha1="613298b7aa012f121ce542881c0a599ebd8078f2">
+        <dex dex="/Users/vale/Proyectos/youthmap/new_src2/app/build/intermediates/pre-dexed/debug/com.google.android.gms-play-services-measurement-8.4.0_133a1441d6fe06f42ad2ac1e77d4c614f1a5037c.jar" />
+    </item>
+
+</items>
